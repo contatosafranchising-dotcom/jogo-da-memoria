@@ -188,9 +188,9 @@
 
 
 <!-- =================================================================
-     TELA 6 — OFERTA AO FRANQUEADO
+     TELA 6 — PERGUNTA 1 AO FRANQUEADO: quer o jogo?
      Não veio no layout; feita com os elementos da marca.
-     Aparece só quando CONFIG.MODO_DEMO_FRANQUEADO = true.
+     Aparece só no link com ?modo=franqueado (ver config.js).
      ================================================================= -->
 <main class="tela" id="tela-franqueado">
   <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
@@ -201,7 +201,7 @@
   </header>
 
   <div class="conteudo">
-    <div class="centro"><span class="faixa-topo">Para o franqueado</span></div>
+    <div class="centro"><span class="faixa-topo">Pergunta 1 de 2</span></div>
 
     <h1 class="titulo titulo--menor">
       VOCÊ QUER ESSE JOGO<br /><span class="vm">NA SUA UNIDADE?</span>
@@ -213,12 +213,28 @@
     </p>
 
     <div class="cartao mt-20">
-      <p class="cupom__rotulo centro mb-8">A franqueadora publica e gerencia</p>
-      <div id="lista-combo"></div>
+      <p class="cupom__rotulo centro mb-8">O jogo da sua unidade inclui</p>
 
-      <div class="preco">
-        <div class="preco__valor">R$ <span id="valor-combo">20</span><small>,00</small></div>
-        <p class="preco__nota">por mês, no boleto de fundo.<br />Sem contrato novo, sem trabalho pra loja.</p>
+      <div class="combo">
+        <div class="combo__icone">🎮</div>
+        <div class="combo__texto">
+          <h3>Link exclusivo da sua loja</h3>
+          <p>O cupom cai no WhatsApp da sua unidade, não no da rede.</p>
+        </div>
+      </div>
+      <div class="combo">
+        <div class="combo__icone">🎟️</div>
+        <div class="combo__texto">
+          <h3>Cinco níveis de prêmio</h3>
+          <p>Todos com pedido mínimo acima do seu ticket médio.</p>
+        </div>
+      </div>
+      <div class="combo">
+        <div class="combo__icone">📊</div>
+        <div class="combo__texto">
+          <h3>Relatório da sua unidade</h3>
+          <p>Acessos, partidas e cupons enviados, mês a mês.</p>
+        </div>
       </div>
 
       <div class="par-botoes">
@@ -238,7 +254,56 @@
 
 
 <!-- =================================================================
-     TELA 7 — CONFIRMAÇÃO DA RESPOSTA DO FRANQUEADO
+     TELA 6B — PERGUNTA 2 AO FRANQUEADO: a franqueadora publica?
+     Vale por si só: são os quatro links da unidade publicados e
+     gerenciados pela franqueadora por R$ 20,00 no boleto de fundo.
+     ================================================================= -->
+<main class="tela" id="tela-franqueado-2">
+  <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
+  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+
+  <header class="marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
+  </header>
+
+  <div class="conteudo">
+    <div class="centro"><span class="faixa-topo">Pergunta 2 de 2</span></div>
+
+    <h1 class="titulo titulo--menor">
+      QUER QUE A GENTE<br /><span class="vm">PUBLIQUE PRA VOCÊ?</span>
+    </h1>
+
+    <p class="chamada" id="franq2-chamada">
+      Sua unidade não mexe em nada. A gente sobe,<br />atualiza e acompanha.
+    </p>
+
+    <div class="cartao mt-20">
+      <p class="cupom__rotulo centro mb-8">A franqueadora publica e gerencia</p>
+      <div id="lista-combo"></div>
+
+      <div class="preco">
+        <div class="preco__valor">R$ <span id="valor-combo">20</span><small>,00</small></div>
+        <p class="preco__nota">por mês, no boleto de fundo.<br />Sem contrato novo, sem trabalho pra loja.</p>
+      </div>
+
+      <div class="par-botoes">
+        <button class="botao" id="btn-quero-combo">SIM, PODE PUBLICAR</button>
+        <button class="botao botao--fantasma" id="btn-nao-combo">Não, obrigado</button>
+      </div>
+    </div>
+
+    <p class="aviso">
+      As duas respostas vão para o painel da franqueadora.<br />
+      Nenhuma cobrança é feita agora.
+    </p>
+  </div>
+
+  <div class="rodape-foto"><img src="assets/img/deco/food-regras.jpg" alt="" aria-hidden="true" /></div>
+</main>
+
+
+<!-- =================================================================
+     TELA 7 — CONFIRMAÇÃO DAS RESPOSTAS DO FRANQUEADO
      ================================================================= -->
 <main class="tela" id="tela-obrigado">
   <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />

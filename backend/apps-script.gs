@@ -44,8 +44,10 @@
 
 var ABA_EVENTOS = 'eventos';
 
+// resposta  = pergunta 1 (a unidade quer o jogo)
+// resposta2 = pergunta 2 (a franqueadora publica os links por R$ 20,00)
 var COLUNAS = ['quando', 'tipo', 'loja', 'nome', 'tempo', 'nivel',
-               'premio', 'cupom', 'resposta', 'origem'];
+               'premio', 'cupom', 'resposta', 'resposta2', 'origem'];
 
 
 /* ---------- ponto de entrada ---------- */
@@ -109,6 +111,7 @@ function registrar(p) {
     p.premio || '',
     p.cupom || '',
     p.resposta || '',
+    p.resposta2 || '',
     'web'
   ]);
 
@@ -134,12 +137,14 @@ function listar() {
     var quando = linha[0];
     var tipo = String(linha[1] || '');
     var slug = String(linha[2] || '(sem-loja)');
-    var resposta = String(linha[8] || '');
+    var resposta  = String(linha[8] || '');
+    var resposta2 = String(linha[9] || '');
 
     if (!porLoja[slug]) {
       porLoja[slug] = {
         loja: slug, acessos: 0, inicios: 0, conclusoes: 0,
-        bloqueios: 0, resgates: 0, resposta: '', respostaEm: 0, ultimoEm: 0
+        bloqueios: 0, resgates: 0,
+        resposta: '', resposta2: '', respostaEm: 0, ultimoEm: 0
       };
     }
 
@@ -155,6 +160,7 @@ function listar() {
     // vale sempre a resposta mais recente daquela unidade
     if (tipo === 'resposta' && resposta && ts >= l.respostaEm) {
       l.resposta = resposta;
+      l.resposta2 = resposta2;
       l.respostaEm = ts;
     }
     if (ts > l.ultimoEm) l.ultimoEm = ts;

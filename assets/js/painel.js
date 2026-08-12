@@ -58,9 +58,17 @@
     return window.location.href.replace(/painel\.html.*$/, "index.html");
   }
 
-  function linkDaLoja(slug) {
+  /* Cada unidade tem DOIS links, do mesmo jogo publicado:
+
+     cliente    -> ?loja=slug                  acaba na tela do prêmio
+     franqueado -> ?loja=slug&modo=franqueado  acaba nas duas perguntas
+
+     É o link que decide, não o config: dá para mandar o do franqueado para
+     o dono da loja e o do cliente para o Instagram no mesmo dia.        */
+  function linkDaLoja(slug, paraFranqueado) {
     const base = baseCalculada();
-    return base + (base.indexOf("?") > -1 ? "&" : "?") + "loja=" + slug;
+    const junta = base.indexOf("?") > -1 ? "&" : "?";
+    return base + junta + "loja=" + slug + (paraFranqueado ? "&modo=franqueado" : "");
   }
 
   /* =========================================================
@@ -90,7 +98,8 @@
           conclusoes: m.conclusoes || 0,
           bloqueios: m.bloqueios || 0,
           resgates: m.resgates || 0,
-          resposta: m.resposta || "pendente"
+          resposta: m.resposta || "pendente",     // P1 — quer o jogo
+          resposta2: m.resposta2 || "pendente"     // P2 — publicação por R$ 20,00
         };
       });
 
@@ -126,7 +135,12 @@
 
     let lista = dados.filter(function (l) {
       const casaTexto = !termo || l.nome.toLowerCase().indexOf(termo) > -1 || l.slug.indexOf(termo) > -1;
-      const casaResposta = !filtro || l.resposta === filtro;
+
+      let casaResposta = true;
+      if (filtro === "pendente")            casaResposta = l.resposta === "pendente";
+      else if (filtro.indexOf("p1:") === 0) casaResposta = l.resposta  === filtro.slice(3);
+      else if (filtro.indexOf("p2:") === 0) casaResposta = l.resposta2 === filtro.slice(3);
+
       return casaTexto && casaResposta;
     });
 
@@ -136,6 +150,49 @@
     });
 
     return lista;
+  }
+
+  function celulaResposta(valor, textoSim, textoNao) {
+    const td = document.createElement("td");
+    const marcador = document.createElement("span");
+    marcador.className = "marcador marcador--" + valor;
+    marcador.textContent = valor === "sim" ? textoSim
+                         : valor === "nao" ? textoNao
+                         : "Sem resposta";
+    td.appendChild(marcador);
+    return td;
+  }
+
+  function celulaLink(l, paraFranqueado, rotulo) {
+    const td = document.createElement("td");
+    const caixa = document.createElement("div");
+    caixa.className = "celula-link";
+
+    const endereco = linkDaLoja(l.slug, paraFranqueado);
+
+    const texto = document.createElement("span");
+    texto.className = "link-loja";
+    texto.textContent = endereco;
+
+    const botao = document.createElement("button");
+    botao.className = "mini";
+    botao.textContent = "Copiar";
+    botao.addEventListener("click", function () {
+      copiar(linkDaLoja(l.slug, paraFranqueado), rotulo + " de " + l.nome + " copiado!");
+    });
+
+    const abrir = document.createElement("a");
+    abrir.className = "mini";
+    abrir.textContent = "Abrir";
+    abrir.target = "_blank";
+    abrir.rel = "noopener";
+    abrir.href = endereco;
+
+    caixa.appendChild(texto);
+    caixa.appendChild(botao);
+    caixa.appendChild(abrir);
+    td.appendChild(caixa);
+    return td;
   }
 
   function desenhar() {
@@ -166,40 +223,13 @@
         tr.appendChild(td);
       });
 
-      // resposta
-      const tdResp = document.createElement("td");
-      const marcador = document.createElement("span");
-      marcador.className = "marcador marcador--" + l.resposta;
-      marcador.textContent = l.resposta === "sim" ? "Sim, quer"
-                           : l.resposta === "nao" ? "Agora não"
-                           : "Sem resposta";
-      tdResp.appendChild(marcador);
-      tr.appendChild(tdResp);
+      // as duas respostas do final
+      tr.appendChild(celulaResposta(l.resposta,  "Sim, quer",     "Agora não"));
+      tr.appendChild(celulaResposta(l.resposta2, "Sim, publicar", "Não publicar"));
 
-      // link
-      const tdLink = document.createElement("td");
-      const caixa = document.createElement("div");
-      caixa.className = "celula-link";
-      const texto = document.createElement("span");
-      texto.className = "link-loja";
-      texto.textContent = linkDaLoja(l.slug);
-      const botao = document.createElement("button");
-      botao.className = "mini";
-      botao.textContent = "Copiar";
-      botao.addEventListener("click", function () {
-        copiar(linkDaLoja(l.slug), "Link de " + l.nome + " copiado!");
-      });
-      const abrir = document.createElement("a");
-      abrir.className = "mini";
-      abrir.textContent = "Abrir";
-      abrir.target = "_blank";
-      abrir.rel = "noopener";
-      abrir.href = linkDaLoja(l.slug);
-      caixa.appendChild(texto);
-      caixa.appendChild(botao);
-      caixa.appendChild(abrir);
-      tdLink.appendChild(caixa);
-      tr.appendChild(tdLink);
+      // os dois links da unidade
+      tr.appendChild(celulaLink(l, false, "Link do cliente"));
+      tr.appendChild(celulaLink(l, true,  "Link do franqueado"));
 
       corpo.appendChild(tr);
     });
@@ -217,39 +247,57 @@
     const inicios = soma("inicios");
     const conclusoes = soma("conclusoes");
     const resgates = soma("resgates");
-    const sim = dados.filter(function (l) { return l.resposta === "sim"; }).length;
+    const sim  = dados.filter(function (l) { return l.resposta  === "sim"; }).length;
+    const sim2 = dados.filter(function (l) { return l.resposta2 === "sim"; }).length;
 
     $("#n-acessos").textContent = acessos;
     $("#n-inicios").textContent = inicios;
     $("#n-conclusoes").textContent = conclusoes;
     $("#n-resgates").textContent = resgates;
     $("#n-sim").textContent = sim;
+    $("#n-sim2").textContent = sim2;
     $("#n-total-lojas").textContent = dados.length;
     $("#n-taxa").textContent = inicios ? Math.round((conclusoes / inicios) * 100) + "%" : "0%";
-    $("#n-receita").textContent = "R$ " + (sim * CONFIG.VALOR_COMBO).toLocaleString("pt-BR");
+    // quem paga os R$ 20,00 é quem disse sim na PERGUNTA 2 (a publicação),
+    // não quem disse sim ao jogo — o jogo em si não é cobrado
+    $("#n-receita").textContent = "R$ " + (sim2 * CONFIG.VALOR_COMBO).toLocaleString("pt-BR");
   }
 
   /* =========================================================
      exportações
      ========================================================= */
 
-  function copiarTodosOsLinks() {
+  function copiarUmaColuna(paraFranqueado) {
     const linhas = dados.map(function (l) {
-      return l.nome + "\t" + linkDaLoja(l.slug);
+      return l.nome + "\t" + linkDaLoja(l.slug, paraFranqueado);
     });
-    copiar(linhas.join("\n"), dados.length + " links copiados! Cole no Excel ou no WhatsApp.");
+    copiar(linhas.join("\n"),
+      dados.length + (paraFranqueado ? " links do franqueado" : " links do cliente") +
+      " copiados! Cole no Excel ou no WhatsApp.");
+  }
+
+  function copiarTodosOsLinks() {
+    const linhas = [["Unidade", "Link do cliente", "Link do franqueado"].join("\t")].concat(
+      dados.map(function (l) {
+        return l.nome + "\t" + linkDaLoja(l.slug, false) + "\t" + linkDaLoja(l.slug, true);
+      })
+    );
+    copiar(linhas.join("\n"), dados.length + " unidades com os 2 links, prontas para colar no Excel.");
   }
 
   function baixarCsv() {
     const cabecalho = ["Unidade", "Codigo", "Slug", "Acessos", "Partidas", "Concluidas",
-                       "Bloqueios", "Cupons", "Resposta", "Link"];
+                       "Bloqueios", "Cupons",
+                       "P1 quer o jogo", "P2 publicacao R$ " + CONFIG.VALOR_COMBO,
+                       "Link do cliente", "Link do franqueado"];
 
     const escapar = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
 
     const linhas = [cabecalho.join(";")].concat(
       filtrarEOrdenar().map(function (l) {
         return [l.nome, l.cod, l.slug, l.acessos, l.inicios, l.conclusoes,
-                l.bloqueios, l.resgates, l.resposta, linkDaLoja(l.slug)]
+                l.bloqueios, l.resgates, l.resposta, l.resposta2,
+                linkDaLoja(l.slug, false), linkDaLoja(l.slug, true)]
                .map(escapar).join(";");
       })
     );
@@ -277,6 +325,8 @@
     $("#ordem").addEventListener("change", desenhar);
     $("#btn-atualizar").addEventListener("click", carregar);
     $("#btn-copiar-links").addEventListener("click", copiarTodosOsLinks);
+    $("#btn-copiar-publicos").addEventListener("click", function () { copiarUmaColuna(false); });
+    $("#btn-copiar-franqueados").addEventListener("click", function () { copiarUmaColuna(true); });
     $("#btn-csv").addEventListener("click", baixarCsv);
 
     const campoBase = $("#base-url");
@@ -294,7 +344,8 @@
       carregar();
     });
 
-    $("#btn-copiar-links").textContent = "Copiar os " + LOJAS.length + " links";
+    $("#btn-copiar-publicos").textContent = "Copiar os " + LOJAS.length + " links do cliente";
+    $("#btn-copiar-franqueados").textContent = "Copiar os " + LOJAS.length + " links do franqueado";
   }
 
   ligar();

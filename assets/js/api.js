@@ -124,7 +124,10 @@ const API = (function () {
       if (!porLoja[slug]) {
         porLoja[slug] = {
           loja: slug, acessos: 0, inicios: 0, conclusoes: 0,
-          bloqueios: 0, resgates: 0, resposta: "", respostaEm: 0, ultimoEm: 0
+          bloqueios: 0, resgates: 0,
+          resposta: "",    // P1 — a unidade quer o jogo
+          resposta2: "",   // P2 — a franqueadora publica os links por R$ 20,00
+          respostaEm: 0, ultimoEm: 0
         };
       }
       const l = porLoja[slug];
@@ -134,7 +137,8 @@ const API = (function () {
       if (ev.tipo === "bloqueio")  l.bloqueios++;
       if (ev.tipo === "resgate")   l.resgates++;
       if (ev.tipo === "resposta" && ev.em >= l.respostaEm) {
-        l.resposta = ev.resposta;
+        l.resposta = ev.resposta || "";
+        l.resposta2 = ev.resposta2 || "";
         l.respostaEm = ev.em;
       }
       if (ev.em > l.ultimoEm) l.ultimoEm = ev.em;

@@ -233,7 +233,11 @@ Se a fraude virar problema real (volume alto ou reclamação de franqueado), a s
 - [x] Cupom padronizado (`SA-CAM-N5-7K2P`)
 - [x] Seletor de unidade + link exclusivo por loja (`?loja=slug`)
 - [x] Tela de oferta ao franqueado + registro da resposta
-- [x] Painel da franqueadora (`painel.html`)
+- [x] Painel da franqueadora (`painel.html`) com os 2 links e as 2 respostas por loja
+- [x] Encaixe proporcional da tela em qualquer celular (sem rolagem)
+- [x] Espiada de 1s no começo da partida (`CONFIG.PREVIA_MS`)
+- [x] Duas perguntas ao franqueado: quer o jogo? / a franqueadora publica?
+- [x] Zerar bloqueados pela chave `CONFIG.TEMPORADA`
 - [x] Backend opcional em Google Apps Script (`backend/apps-script.gs`)
 - [x] Definição do número de WhatsApp por unidade (as 42 estão no `config.js`)
 - [ ] Calibração das faixas de tempo com dados reais

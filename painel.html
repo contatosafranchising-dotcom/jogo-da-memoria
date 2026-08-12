@@ -51,12 +51,17 @@
       <span class="ficha__nota">clicaram no WhatsApp</span>
     </div>
     <div class="ficha ficha--sim">
-      <span class="ficha__rotulo">Lojas que disseram SIM</span>
+      <span class="ficha__rotulo">SIM na pergunta 1</span>
       <strong class="ficha__valor" id="n-sim">0</strong>
-      <span class="ficha__nota">de <span id="n-total-lojas">0</span> unidades</span>
+      <span class="ficha__nota">querem o jogo, de <span id="n-total-lojas">0</span> unidades</span>
+    </div>
+    <div class="ficha ficha--sim">
+      <span class="ficha__rotulo">SIM na pergunta 2</span>
+      <strong class="ficha__valor" id="n-sim2">0</strong>
+      <span class="ficha__nota">aceitam a publicação</span>
     </div>
     <div class="ficha">
-      <span class="ficha__rotulo">Receita se todas aceitarem</span>
+      <span class="ficha__rotulo">Receita da pergunta 2</span>
       <strong class="ficha__valor" id="n-receita">R$ 0</strong>
       <span class="ficha__nota">por mês, no boleto de fundo</span>
     </div>
@@ -68,9 +73,11 @@
 
     <select class="entrada entrada--curta" id="filtro-resposta">
       <option value="">Todas as respostas</option>
-      <option value="sim">Só quem disse SIM</option>
-      <option value="nao">Só quem disse NÃO</option>
-      <option value="pendente">Só quem não respondeu</option>
+      <option value="p1:sim">P1 · quer o jogo: SIM</option>
+      <option value="p1:nao">P1 · quer o jogo: NÃO</option>
+      <option value="p2:sim">P2 · publicação: SIM</option>
+      <option value="p2:nao">P2 · publicação: NÃO</option>
+      <option value="pendente">Ainda não respondeu</option>
     </select>
 
     <select class="entrada entrada--curta" id="ordem">
@@ -80,7 +87,9 @@
       <option value="resgates">Ordenar por cupons</option>
     </select>
 
-    <button class="btn" id="btn-copiar-links">Copiar os 42 links</button>
+    <button class="btn" id="btn-copiar-publicos">Copiar links do cliente</button>
+    <button class="btn" id="btn-copiar-franqueados">Copiar links do franqueado</button>
+    <button class="btn btn--fantasma" id="btn-copiar-links">Copiar tudo (2 colunas)</button>
     <button class="btn btn--fantasma" id="btn-csv">Baixar CSV</button>
   </section>
 
@@ -105,8 +114,10 @@
           <th class="num">Concluídas</th>
           <th class="num">Bloqueios</th>
           <th class="num">Cupons</th>
-          <th>Quer o jogo?</th>
-          <th>Link da unidade</th>
+          <th>P1 · quer o jogo?</th>
+          <th>P2 · publicação?</th>
+          <th>Link do cliente</th>
+          <th>Link do franqueado</th>
         </tr>
       </thead>
       <tbody id="corpo-tabela"></tbody>

@@ -146,6 +146,9 @@ input{ font-family:inherit; }
 .titulo{
   font-weight:900;
   font-size:clamp(44px,15vw,68px);
+  /* palavra comprida (FRANQUEADORA, ESTABELECIMENTO) não pode furar a tela */
+  overflow-wrap:break-word;
+  word-break:break-word;
   line-height:.88;
   letter-spacing:-.02em;
   text-transform:uppercase;
@@ -500,6 +503,14 @@ input{ font-family:inherit; }
 
 .carta.virada{ transform:rotateY(180deg); }
 
+/* espiada de abertura: todas as cartas abrem juntas por 1 segundo e fecham.
+   O cronômetro só começa depois, então a espiada não custa tempo a ninguém. */
+.carta.previa{ transform:rotateY(180deg); }
+.carta.previa .carta__frente{
+  border-color:var(--dourado);
+  box-shadow:0 0 0 1px rgba(212,175,55,.45), 0 0 22px rgba(212,175,55,.35);
+}
+
 .carta__face{
   position:absolute;
   inset:0;
@@ -840,12 +851,52 @@ input{ font-family:inherit; }
    aparelho. 1cqw = 1% da largura da tela = 8,53 px do layout.          */
 
 .tela--arte{
+  /* --prop  = altura ÷ largura da arte desta tela
+     --sobra = o que existe fora da arte (a faixa da unidade, na capa) */
+  --prop: 2.1618;
+  --sobra: 0px;
+
   padding:0;
   min-height:0;
   overflow:visible;
   container-type:inline-size;
+
+  /* A TELA INTEIRA CABE NO APARELHO.
+     A largura encolhe até a arte caber na altura da janela. Como tudo que
+     está dentro é % e cqw, o desenho todo — cartas, cronômetro, botões —
+     encolhe junto e a proporção do layout aprovado nunca se perde.
+
+     svh (e não vh nem dvh) é a altura com a barra do navegador VISÍVEL.
+     Com dvh a tela mudaria de tamanho no meio da partida, na hora em que a
+     barra some ao rolar. O piso de 300px é para o celular deitado: ali é
+     melhor rolar a página do que espremer o tabuleiro até ninguém acertar. */
+  width:min(100%, var(--largura));
+  width:min(100%, var(--largura), calc((100svh - var(--sobra)) / var(--prop)));
+  margin-inline:auto;
 }
-.tela--arte.ativa{ display:block; }
+
+/* Celular deitado: a altura é tão pequena que caber inteiro deixaria as
+   cartas do tamanho de um grão de arroz. Ali é melhor parar de encolher em
+   300px e deixar a página rolar. */
+@media (orientation:landscape){
+  .tela--arte{
+    width:min(100%, var(--largura), max(300px, calc((100svh - var(--sobra)) / var(--prop))));
+  }
+}
+.tela--arte.ativa{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;      /* sobrou altura? divide igual em cima e embaixo */
+  min-height:100vh;
+  min-height:100svh;
+}
+.tela--arte.ativa > *{ flex:0 0 auto; }   /* nada de espremer a arte */
+
+/* proporção de cada tela, medida no arquivo original */
+#tela-nome     { --prop:2.1618; --sobra:48px; }  /* 853 x 1844 + a faixa da unidade */
+#tela-regras   { --prop:2.1076; }                /* 864 x 1821 */
+#tela-bloqueado{ --prop:2.1618; }                /* 853 x 1844 */
+#tela-jogo     { --prop:2.1534; }                /* topo 505 + 4 fileiras de carta + base 184, sobre 853 */
 
 .arte{
   position:relative;
@@ -907,7 +958,14 @@ input{ font-family:inherit; }
 .faixa-loja{
   max-width:var(--largura);
   margin:0 auto;
+  /* 16 + 10 + 22 = 48px cravados, que é o --sobra reservado em #tela-nome.
+     Uma linha só, sempre: se o nome da unidade for comprido ele corta com
+     reticências em vez de empurrar a arte para fora da tela. */
   padding:10px 16px 22px;
+  line-height:16px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
   text-align:center;
   font-size:12.5px;
   font-weight:600;
@@ -958,12 +1016,12 @@ input{ font-family:inherit; }
 
 /* ---------- 18. TELAS MUITO ESTREITAS (360px e abaixo) ---------- */
 
+/* Aqui só entram as telas montadas em CSS (loja, prêmio, franqueado).
+   As telas desenhadas NÃO levam ajuste por largura: elas são proporcionais
+   por construção, e um tamanho fixo em px aqui desencaixaria as cartas e o
+   cronômetro da arte de fundo. */
 @media (max-width:360px){
   .tela{ padding:0 14px 32px; }
-  .tabuleiro{ gap:8px; }
-  .carta__nome{ font-size:8.5px; padding:12px 3px 4px; }
-  .crono__valor{ font-size:29px; }
-  .erro-bola{ width:33px; height:33px; }
   .regra{ gap:12px; padding:14px 14px; }
   .regra__icone{ flex-basis:52px; }
   .regra__icone img{ max-height:44px; }

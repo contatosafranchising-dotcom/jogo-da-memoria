@@ -194,7 +194,7 @@ img{ display:block; max-width:100%; }
   width:100%;
   border-collapse:collapse;
   font-size:13px;
-  min-width:900px;
+  min-width:1240px;   /* 2 respostas + 2 links por unidade */
 }
 .tabela th{
   text-align:left;
@@ -243,7 +243,7 @@ td.num{ text-align:right; font-variant-numeric:tabular-nums; }
   font-size:11.5px;
   color:var(--cinza);
   font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  max-width:190px;
+  max-width:150px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;

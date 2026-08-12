@@ -42,6 +42,23 @@
     }
   };
 
+  /* Virada de temporada: zera o bloqueio de 24h de quem já jogou.
+     Roda antes de qualquer outra coisa, uma única vez por aparelho —
+     depois de zerar, grava a temporada nova e não mexe mais em nada. */
+  function aplicarTemporada() {
+    const st = Estado.ler();
+    const atual = CONFIG.TEMPORADA || 1;
+    if (st.temporada === atual) return;
+
+    Estado.gravar({
+      temporada: atual,
+      bloqueadoAte: null,   // a punição da temporada passada morre aqui
+      errosSeguidos: 0
+    });
+  }
+
+  aplicarTemporada();
+
   /* =========================================================
      3. FUNÇÕES DE APOIO
      ========================================================= */
@@ -88,12 +105,12 @@
 
   // aviso curto no rodapé — o projeto não usa alert()
   let avisoTimer = null;
-  function avisar(texto) {
+  function avisar(texto, ms) {
     const el = $("#aviso-flutuante");
     el.textContent = texto;
     el.classList.add("visivel");
     clearTimeout(avisoTimer);
-    avisoTimer = setTimeout(function () { el.classList.remove("visivel"); }, 2800);
+    avisoTimer = setTimeout(function () { el.classList.remove("visivel"); }, ms || 2800);
   }
 
   /* =========================================================
@@ -133,6 +150,18 @@
     }
     return null;
   }
+
+  // ?modo=franqueado mostra as duas perguntas do final; ?modo=cliente nunca
+  // mostra. Sem o parâmetro, vale o que estiver no config.
+  function modoDaURL() {
+    const busca = new URLSearchParams(window.location.search);
+    const modo = (busca.get("modo") || "").toLowerCase();
+    if (modo === "franqueado" || modo === "franquia") return true;
+    if (modo === "cliente" || modo === "publico") return false;
+    return !!CONFIG.MODO_DEMO_FRANQUEADO;
+  }
+
+  const MODO_FRANQUEADO = modoDaURL();
 
   function lojaDaURL() {
     const busca = new URLSearchParams(window.location.search);
@@ -392,16 +421,43 @@
 
       API.evento("inicio", { loja: loja ? loja.slug : "", nome: Estado.ler().nome || "" });
 
-      // o cronômetro começa quando a última carta terminou de entrar —
-      // ninguém perde tempo por causa da animação de distribuição
+      // o cronômetro começa quando a última carta terminou de entrar e a
+      // espiada acabou — ninguém perde tempo por causa da animação
       const espera = Jogo.cartas.length * 55 + 430;
       setTimeout(function () {
         if (!Jogo.emAndamento) return;
-        $("#tabuleiro").classList.remove("travado");
-        Jogo.travado = false;
-        ligarCronometro();
+        espiar(function () {
+          $("#tabuleiro").classList.remove("travado");
+          Jogo.travado = false;
+          ligarCronometro();
+        });
       }, espera);
     });
+  }
+
+  /* Espiada de abertura.
+     As 12 cartas abrem juntas, ficam CONFIG.PREVIA_MS à mostra e fecham.
+     Tudo acontece com o tabuleiro travado e ANTES do cronômetro ligar:
+     a espiada não conta tempo e é igual para todo mundo. */
+  function espiar(aoTerminar) {
+    const ms = CONFIG.PREVIA_MS || 0;
+    if (ms <= 0) { aoTerminar(); return; }
+
+    const VIRADA = 560;   // a transição da carta no CSS é de .55s
+
+    Jogo.cartas.forEach(function (carta) { carta.classList.add("previa"); });
+    avisar("Memorize as cartas!", ms + VIRADA);
+
+    setTimeout(function () {
+      Jogo.cartas.forEach(function (carta) { carta.classList.remove("previa"); });
+
+      // só libera o toque depois que a última carta terminou de fechar,
+      // senão dá para clicar numa carta ainda aberta e ver o par de graça
+      setTimeout(function () {
+        if (!Jogo.emAndamento) return;
+        aoTerminar();
+      }, VIRADA);
+    }, ms + VIRADA);
   }
 
   function ligarCronometro() {
@@ -597,7 +653,7 @@
 
     $("#btn-whats").href = montarLinkWhats(premio, tempoTexto, cupom, validade);
 
-    $("#btn-ir-franqueado").classList.toggle("oculto", !CONFIG.MODO_DEMO_FRANQUEADO);
+    $("#btn-ir-franqueado").classList.toggle("oculto", !MODO_FRANQUEADO);
 
     irPara("tela-premio");
     soltarConfete();
@@ -681,37 +737,79 @@
     $("#valor-combo").textContent = CONFIG.VALOR_COMBO;
   }
 
-  function responderFranqueado(resposta) {
+  /* As duas perguntas do final.
+     P1 — a unidade quer o jogo?
+     P2 — a franqueadora publica e gerencia os quatro links por R$ 20,00?
+     As duas são feitas sempre, mesmo quem diz não na primeira: a publicação
+     dos links de pedido, reserva e caixinha vale por si só. O painel da
+     franqueadora mostra as duas colunas lado a lado. */
+
+  function responderPergunta1(resposta) {
     Estado.gravar({ respostaFranqueado: resposta, respostaEm: Date.now() });
+
+    const nao = resposta === "nao";
+    $("#franq2-chamada").innerHTML = nao
+      ? "Mesmo sem o jogo: os links de pedido, reserva<br />e caixinha de perguntas continuam de pé."
+      : "Sua unidade não mexe em nada. A gente sobe,<br />atualiza e acompanha.";
+
+    montarCombo();
+    irPara("tela-franqueado-2");
+  }
+
+  function responderPergunta2(resposta2) {
+    const resposta = Estado.ler().respostaFranqueado || "nao";
+    Estado.gravar({ respostaCombo: resposta2, respostaEm: Date.now() });
+
     API.evento("resposta", {
       loja: loja ? loja.slug : "",
-      resposta: resposta,
+      resposta: resposta,      // P1 — quer o jogo
+      resposta2: resposta2,    // P2 — quer a publicação por R$ 20,00
       nome: Estado.ler().nome || ""
     });
 
-    const sim = resposta === "sim";
-    $("#obrigado-icone").textContent = sim ? "🎉" : "👍";
-    $("#obrigado-titulo").innerHTML = sim
-      ? "PERFEITO!<br /><span class=\"vm\">JÁ ANOTAMOS.</span>"
-      : "TUDO BEM!<br /><span class=\"vm\">FICA O CONVITE.</span>";
+    const jogo = resposta === "sim";
+    const publica = resposta2 === "sim";
+    const nomeLoja = loja ? loja.nome : "";
 
-    $("#obrigado-texto").innerHTML = sim
-      ? ("A franqueadora vai preparar os links da unidade <strong>" +
-         (loja ? loja.nome : "") + "</strong> e entrar em contato para combinar a publicação.<br />" +
-         "Os R$ " + CONFIG.VALOR_COMBO + ",00 entram no próximo boleto de fundo.")
-      : ("Sem problema. Sua resposta foi registrada e a unidade <strong>" +
-         (loja ? loja.nome : "") + "</strong> continua com tudo como está.<br />" +
-         "Se mudar de ideia, é só avisar a franqueadora.");
+    let icone, titulo, texto;
+
+    if (jogo && publica) {
+      icone = "🎉";
+      titulo = "PERFEITO!<br /><span class=\"vm\">JÁ ANOTAMOS.</span>";
+      texto = "A franqueadora prepara o jogo da unidade <strong>" + nomeLoja + "</strong>, " +
+              "publica os quatro links e entra em contato para combinar a data.<br />" +
+              "Os R$ " + CONFIG.VALOR_COMBO + ",00 entram no próximo boleto de fundo.";
+    } else if (jogo && !publica) {
+      icone = "🎮";
+      titulo = "FECHADO!<br /><span class=\"vm\">JOGO LIBERADO.</span>";
+      texto = "O jogo da unidade <strong>" + nomeLoja + "</strong> vai ser preparado com o " +
+              "WhatsApp da sua loja.<br />" +
+              "A publicação fica por sua conta e <strong>nada é lançado no boleto</strong>.";
+    } else if (!jogo && publica) {
+      icone = "📣";
+      titulo = "COMBINADO!<br /><span class=\"vm\">A GENTE PUBLICA.</span>";
+      texto = "Sem o jogo, então. A franqueadora publica e mantém os links de pedidos, " +
+              "reservas e a caixinha de perguntas da unidade <strong>" + nomeLoja + "</strong>.<br />" +
+              "Os R$ " + CONFIG.VALOR_COMBO + ",00 entram no próximo boleto de fundo.";
+    } else {
+      icone = "👍";
+      titulo = "TUDO BEM!<br /><span class=\"vm\">FICA O CONVITE.</span>";
+      texto = "Suas duas respostas foram registradas e a unidade <strong>" + nomeLoja +
+              "</strong> continua com tudo como está.<br />" +
+              "Se mudar de ideia, é só avisar a franqueadora.";
+    }
+
+    $("#obrigado-icone").textContent = icone;
+    $("#obrigado-titulo").innerHTML = titulo;
+    $("#obrigado-texto").innerHTML = texto;
 
     // o botão só aparece se o WhatsApp da franqueadora estiver no config
     const botaoFranq = $("#btn-falar-franqueadora");
     if (CONFIG.WHATS_FRANQUEADORA) {
-      const texto = sim
-        ? ("Oi! Sou da unidade " + (loja ? loja.nome : "") +
-           " e quero o Jogo da Memória + os links (pedidos, reservas e caixinha de perguntas) na minha loja.")
-        : ("Oi! Sou da unidade " + (loja ? loja.nome : "") +
-           " e queria entender melhor a proposta do Jogo da Memória antes de decidir.");
-      botaoFranq.href = "https://wa.me/" + CONFIG.WHATS_FRANQUEADORA + "?text=" + encodeURIComponent(texto);
+      const msg = "Oi! Sou da unidade " + nomeLoja + ". Respondi o Jogo da Memória: " +
+                  "jogo na minha loja = " + (jogo ? "SIM" : "não") + ", " +
+                  "publicação dos links pela franqueadora = " + (publica ? "SIM" : "não") + ".";
+      botaoFranq.href = "https://wa.me/" + CONFIG.WHATS_FRANQUEADORA + "?text=" + encodeURIComponent(msg);
       botaoFranq.classList.remove("oculto");
     } else {
       botaoFranq.classList.add("oculto");
@@ -792,12 +890,13 @@
     });
 
     $("#btn-ir-franqueado").addEventListener("click", function () {
-      montarCombo();
       irPara("tela-franqueado");
     });
 
-    $("#btn-quero").addEventListener("click", function () { responderFranqueado("sim"); });
-    $("#btn-nao-quero").addEventListener("click", function () { responderFranqueado("nao"); });
+    $("#btn-quero").addEventListener("click", function () { responderPergunta1("sim"); });
+    $("#btn-nao-quero").addEventListener("click", function () { responderPergunta1("nao"); });
+    $("#btn-quero-combo").addEventListener("click", function () { responderPergunta2("sim"); });
+    $("#btn-nao-combo").addEventListener("click", function () { responderPergunta2("nao"); });
 
     $("#btn-jogar-de-novo").addEventListener("click", function () {
       if (estaBloqueado()) { irPara("tela-bloqueado"); return; }

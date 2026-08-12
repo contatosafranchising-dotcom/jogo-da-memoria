@@ -83,11 +83,12 @@ As telas usam os nomes de seção previstos no CLAUDE.md: `#tela-nome`,
 ```
 Link da unidade (?loja=camboriu)
   ↓
-Nome  →  Regras  →  Tabuleiro (cronômetro dispara)
+Nome  →  Regras  →  Espiada de 1s  →  Tabuleiro (cronômetro dispara)
   ↓
 ├── Completou os 6 pares → prêmio + cupom + botão do WhatsApp
 │                            ↓
-│                          tela do franqueado (só no modo demonstração)
+│                          pergunta 1: quer o jogo?      (só no link do franqueado)
+│                          pergunta 2: a gente publica?  (só no link do franqueado)
 │
 └── Errou 3 vezes SEGUIDAS → bloqueio de 24h com contador regressivo
 ```
@@ -100,17 +101,54 @@ Nome  →  Regras  →  Tabuleiro (cronômetro dispara)
 - Erro é **consecutivo**: acertar um par zera o contador.
 - O tabuleiro trava durante a comparação, então não dá para virar 4 cartas.
 - As fotos são pré-carregadas **antes** do cronômetro começar.
+- **Espiada de abertura:** as 12 cartas abrem por 1 segundo e fecham. O
+  cronômetro só liga depois que elas fecham, então a espiada não custa tempo
+  a ninguém e todo mundo começa vendo a mesma coisa. Muda em
+  `CONFIG.PREVIA_MS` (0 desliga).
+
+### A tela cabe inteira no aparelho
+
+Cada tela desenhada tem uma proporção fixa (a do arquivo aprovado). O CSS
+encolhe a largura até essa proporção caber na altura da janela — cartas,
+cronômetro e botões encolhem juntos, e o desenho continua idêntico ao layout
+em qualquer celular, sem rolagem.
+
+A conta usa `svh` (altura com a barra do navegador aberta) de propósito: com
+`dvh` a tela mudaria de tamanho no meio da partida, na hora em que a barra
+some. No celular deitado a largura para de encolher em 300px e a página
+passa a rolar — melhor rolar do que espremer o tabuleiro.
 
 ---
 
 ## 5. Mexendo no que importa (`assets/js/config.js`)
 
-### Ligar/desligar a tela do franqueado
+### Quem vê as perguntas do final
+
+Quem decide é o **link**, não o arquivo:
+
+| Link | O que acontece |
+|---|---|
+| `?loja=camboriu` | jogo do cliente: acaba na tela do prêmio |
+| `?loja=camboriu&modo=franqueado` | acaba nas duas perguntas ao franqueado |
+
+Os dois saem prontos no `painel.html`. Dá para mandar o do franqueado para o
+dono da loja e o do cliente para o Instagram no mesmo dia, sem republicar
+nada. `MODO_DEMO_FRANQUEADO` no config só vale quando o link vem **sem**
+`?modo=`.
+
+### Zerar quem está bloqueado
+
+O bloqueio de 24h mora no aparelho de cada cliente — não dá para apagar de
+fora. Para liberar todo mundo de uma vez, troque o número e publique:
 
 ```js
-MODO_DEMO_FRANQUEADO: true,   // versão para mandar às 42 unidades
-MODO_DEMO_FRANQUEADO: false,  // versão que vai para o cliente final
+TEMPORADA: 2,   // vire para 3, 4, 5...
 ```
+
+Na primeira vez que o aparelho abrir qualquer um dos 42 links, o jogo vê que
+a temporada mudou, joga fora o bloqueio antigo e libera a pessoa. O nome e a
+unidade continuam salvos. Bloqueios criados **depois** da virada continuam
+valendo normalmente.
 
 ### Prêmios
 
@@ -220,16 +258,20 @@ Me manda seu pedido que eu já lanço aqui. 🥢
 
 ## 7. Os links das 42 unidades
 
-Cada loja tem o link dela:
+Cada loja tem **dois** links do mesmo jogo publicado:
 
 ```
-https://contatosafranchising-dotcom.github.io/jogo-da-memoria/?loja=camboriu
-https://contatosafranchising-dotcom.github.io/jogo-da-memoria/?loja=maringa
-...
+cliente     .../jogo-da-memoria/?loja=camboriu
+franqueado  .../jogo-da-memoria/?loja=camboriu&modo=franqueado
 ```
 
-Abra o `painel.html` e clique em **"Copiar os 42 links"**. Vem tudo pronto
-para colar no Excel ou mandar no grupo.
+O do cliente acaba na tela do prêmio. O do franqueado segue para as duas
+perguntas e grava a resposta no painel.
+
+No `painel.html` há três botões: **Copiar links do cliente**, **Copiar links
+do franqueado** e **Copiar tudo (2 colunas)** — este último vem com cabeçalho,
+pronto para colar no Excel. Cada linha da tabela também tem Copiar e Abrir
+para cada um dos dois links.
 
 Quem abrir o link sem `?loja=` cai numa tela de escolha de unidade — ninguém
 fica sem saber para onde vai o cupom.
@@ -239,12 +281,23 @@ fica sem saber para onde vai o cupom.
 ## 8. O painel da franqueadora (`painel.html`)
 
 Mostra, por unidade: acessos, partidas começadas, partidas concluídas,
-bloqueios por 3 erros, cupons enviados, **a resposta do franqueado** sobre
-contratar o jogo e o link exclusivo com botão de copiar e de abrir.
+bloqueios por 3 erros, cupons enviados, **as duas respostas do franqueado** e
+os **dois links** da unidade, cada um com botão de copiar e de abrir.
 
-No topo: totais da rede, taxa de conclusão e quanto entra por mês se todas
-as lojas que disseram "sim" aceitarem. Tem busca, filtro por resposta,
-ordenação e exportação em CSV.
+As duas perguntas são estas, e são feitas sempre — quem diz não na primeira
+também responde a segunda, porque a publicação dos links de pedido, reserva e
+caixinha vale por si só:
+
+| | Pergunta | Coluna no painel |
+|---|---|---|
+| P1 | A unidade quer o jogo? | *P1 · quer o jogo?* |
+| P2 | A franqueadora publica e gerencia os 4 links por R$ 20,00/mês? | *P2 · publicação?* |
+
+No topo: totais da rede, taxa de conclusão, quantas disseram sim em cada
+pergunta e a receita mensal — que vem da **pergunta 2**, não da 1: o jogo em
+si não é cobrado, o que entra no boleto é a publicação. Tem busca, filtro por
+qualquer uma das duas respostas, ordenação e exportação em CSV com as duas
+colunas de resposta e os dois links.
 
 ### Dois modos
 

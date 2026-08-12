@@ -8,9 +8,12 @@ const CONFIG = {
 
   /* ---------- MODO DE OPERAÇÃO ---------- */
 
-  // true  = depois do prêmio aparece a tela de oferta ao FRANQUEADO
-  //         (versão que a franqueadora manda para as 42 unidades avaliarem)
-  // false = versão do cliente final; termina no prêmio.
+  // Quem vê as duas perguntas do final (a oferta ao franqueado).
+  // O link decide, não este arquivo:
+  //   ...index.html?loja=camboriu                  -> jogo do CLIENTE, acaba no prêmio
+  //   ...index.html?loja=camboriu&modo=franqueado  -> versão do FRANQUEADO, com as perguntas
+  // Este valor é só o que vale quando o link vem SEM ?modo=.
+  // Os dois links de cada loja saem prontos no painel.html.
   MODO_DEMO_FRANQUEADO: true,
 
   // Cole aqui a URL do Google Apps Script (ver /backend/apps-script.gs).
@@ -28,9 +31,24 @@ const CONFIG = {
   //              Atenção: verso diferente por carta parece dica de par para
   //              muita gente, mesmo não sendo. Use só se for essa a intenção.
   VERSO_MODO: "sorteado",
+  // Espiada de abertura: todas as cartas abrem por este tempo e fecham de novo.
+  // O cronômetro só liga DEPOIS que elas fecham — a espiada não custa tempo
+  // a ninguém e todo mundo começa a partida vendo a mesma coisa.
+  // 0 desliga a espiada.
+  PREVIA_MS: 1000,
+
   ERROS_PERMITIDOS: 3,      // erros CONSECUTIVOS; acertar um par zera a contagem
   TEMPO_VIRAR_MS: 850,      // quanto tempo o par errado fica visível antes de desvirar
   BLOQUEIO_HORAS: 24,       // punição por errar 3x seguidas
+
+  // ZERAR TODO MUNDO.
+  // O bloqueio de 24h mora no aparelho de cada cliente, então não dá para
+  // apagar de fora. O jeito é este: troque o número abaixo (2, 3, 4...) e
+  // publique. Na primeira vez que o aparelho abrir o link, o jogo vê que a
+  // temporada mudou, joga fora o bloqueio antigo e libera a pessoa para
+  // jogar de novo. Vale para os 42 links de uma vez.
+  // Só o bloqueio é apagado — o nome e a unidade continuam salvos.
+  TEMPORADA: 2,
   VALIDADE_DIAS: 30,        // validade do cupom
 
   /* ---------- IDENTIDADE ---------- */
