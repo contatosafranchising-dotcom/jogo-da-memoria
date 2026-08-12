@@ -42,7 +42,15 @@ const CONFIG = {
   // mais direto da dificuldade: quanto menor, menos o jogador consegue
   // decorar a carta que errou. Abaixo de 600 vira sorte, não memória.
   TEMPO_VIRAR_MS: 700,
-  BLOQUEIO_HORAS: 24,       // punição por errar 3x seguidas
+  BLOQUEIO_HORAS: 24,       // vale para os dois casos abaixo
+
+  // true  = quem GANHA também espera 24h para jogar de novo.
+  //         Sem isso a pessoa joga em sequência até tirar o temaki e a loja
+  //         recebe dez cupons do mesmo cliente no mesmo dia.
+  //         Quem volta dentro das 24h vê o cupom que já ganhou, com o
+  //         regressivo da próxima tentativa — não perde o prêmio.
+  // false = ganhou, pode jogar de novo na hora.
+  BLOQUEIO_APOS_GANHAR: true,
 
   // ZERAR TODO MUNDO.
   // O bloqueio de 24h mora no aparelho de cada cliente, então não dá para

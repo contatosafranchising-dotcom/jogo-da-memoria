@@ -136,6 +136,25 @@ dono da loja e o do cliente para o Instagram no mesmo dia, sem republicar
 nada. `MODO_DEMO_FRANQUEADO` no config só vale quando o link vem **sem**
 `?modo=`.
 
+### Uma partida por dia, ganhando ou perdendo
+
+```js
+BLOQUEIO_APOS_GANHAR: true,   // quem ganha também espera 24h
+BLOQUEIO_APOS_GANHAR: false,  // ganhou, joga de novo na hora
+```
+
+Sem isso o cliente joga em sequência até tirar o temaki e a loja recebe dez
+cupons do mesmo nome no mesmo dia. Com isso, os dois caminhos param em 24h —
+mas cada um vai para uma tela:
+
+| | O que aparece ao voltar dentro das 24h |
+|---|---|
+| **Ganhou** | a tela do prêmio com o cupom dele, o botão do WhatsApp e o regressivo da próxima tentativa |
+| **Errou 3x** | a tela de tentativas esgotadas |
+
+Quem ganhou **não perde o cupom**: ele fica salvo e é remontado a cada visita
+até vencer os 30 dias.
+
 ### Zerar quem está bloqueado
 
 O bloqueio de 24h mora no aparelho de cada cliente — não dá para apagar de

@@ -237,9 +237,24 @@
     return !!(st.bloqueadoAte && Date.now() < st.bloqueadoAte);
   }
 
+  // Dois motivos levam ao bloqueio de 24h e cada um vai para uma tela:
+  //   "erro"   -> errou 3 vezes seguidas -> tela de tentativas esgotadas
+  //   "premio" -> ganhou -> volta para o próprio cupom, com o regressivo
+  function estaBloqueadoPorErro() {
+    return estaBloqueado() && Estado.ler().bloqueioMotivo !== "premio";
+  }
+
+  // manda para a tela certa de quem está bloqueado; devolve true se desviou
+  function desviarSeBloqueado() {
+    if (!estaBloqueado()) return false;
+    if (Estado.ler().bloqueioMotivo === "premio" && retomarPremio()) return true;
+    irPara("tela-bloqueado");
+    return true;
+  }
+
   function bloquear() {
     const ate = Date.now() + CONFIG.BLOQUEIO_HORAS * 3600 * 1000;
-    Estado.gravar({ bloqueadoAte: ate });
+    Estado.gravar({ bloqueadoAte: ate, bloqueioMotivo: "erro" });
     API.evento("bloqueio", { loja: loja ? loja.slug : "", nome: Estado.ler().nome || "" });
     irPara("tela-bloqueado");
   }
@@ -387,7 +402,7 @@
   }
 
   function iniciarPartida() {
-    if (estaBloqueado()) { irPara("tela-bloqueado"); return; }
+    if (desviarSeBloqueado()) return;
 
     const produtos = sortearProdutos();
     Jogo.verso = CONFIG.VERSO_MODO === "misto" ? null : sortearVerso();
@@ -606,12 +621,22 @@
     const validade = agora + CONFIG.VALIDADE_DIAS * 24 * 3600 * 1000;
     const st = Estado.ler();
 
-    Estado.gravar({
+    const gravar = {
       ultimoPremio: premio.nome,
+      ultimoNivel: premio.nivel,
+      ultimoTempo: segundos,
       premioEm: agora,
       cupom: cupom,
       partidas: (st.partidas || 0) + 1
-    });
+    };
+
+    // ganhou também espera 24h: um cupom por cliente por dia
+    if (CONFIG.BLOQUEIO_APOS_GANHAR) {
+      gravar.bloqueadoAte = agora + CONFIG.BLOQUEIO_HORAS * 3600 * 1000;
+      gravar.bloqueioMotivo = "premio";
+    }
+
+    Estado.gravar(gravar);
 
     API.evento("conclusao", {
       loja: loja ? loja.slug : "",
@@ -625,7 +650,30 @@
     mostrarPremio(premio, segundos, cupom, validade);
   }
 
-  function mostrarPremio(premio, segundos, cupom, validade) {
+  // Recupera o cupom de quem já ganhou hoje e volta ao link dentro das 24h.
+  // Devolve false se não houver prêmio guardado (aí quem chama manda para a
+  // tela de tentativas esgotadas).
+  function retomarPremio() {
+    const st = Estado.ler();
+    if (!st.cupom || !st.premioEm) return false;
+
+    let premio = null;
+    for (let i = 0; i < PREMIOS.length; i++) {
+      if (PREMIOS[i].nivel === st.ultimoNivel || PREMIOS[i].nome === st.ultimoPremio) {
+        premio = PREMIOS[i];
+        break;
+      }
+    }
+    if (!premio) return false;
+
+    const validade = st.premioEm + CONFIG.VALIDADE_DIAS * 24 * 3600 * 1000;
+    if (Date.now() > validade) return false;   // cupom vencido: não adianta remostrar
+
+    mostrarPremio(premio, st.ultimoTempo || 0, st.cupom, validade, true);
+    return true;
+  }
+
+  function mostrarPremio(premio, segundos, cupom, validade, jaEra) {
     const st = Estado.ler();
     const nome = primeiroNome(st.nome);
     const tempoTexto = formatarTempo(segundos);
@@ -634,8 +682,9 @@
       ? ("PARABÉNS,<br /><span class=\"vm\">" + nome.toUpperCase() + "!</span>")
       : "PARABÉNS!";
 
-    $("#premio-tempo").innerHTML =
-      "Você completou em <strong>" + tempoTexto + "</strong> e desbloqueou:";
+    $("#premio-tempo").innerHTML = jaEra
+      ? "Você já jogou hoje e este continua sendo o seu cupom:"
+      : "Você completou em <strong>" + tempoTexto + "</strong> e desbloqueou:";
 
     $("#premio-selo").textContent = premio.selo;
     $("#premio-nome").textContent = premio.nome.toUpperCase();
@@ -655,8 +704,45 @@
 
     $("#btn-ir-franqueado").classList.toggle("oculto", !MODO_FRANQUEADO);
 
+    ligarEsperaDoPremio();
+
     irPara("tela-premio");
-    soltarConfete();
+    if (!jaEra) soltarConfete();   // confete é da vitória, não da revisita
+  }
+
+  /* Regressivo dentro da tela do prêmio. Aparece só quando o cliente está
+     em espera; quando zera, some sozinho e libera a próxima partida. */
+  let esperaTimer = null;
+
+  function ligarEsperaDoPremio() {
+    if (esperaTimer) { clearInterval(esperaTimer); esperaTimer = null; }
+
+    const caixa = $("#premio-espera");
+    const alvo = $("#premio-regressivo");
+
+    function passo() {
+      const falta = (Estado.ler().bloqueadoAte || 0) - Date.now();
+      if (falta <= 0) {
+        clearInterval(esperaTimer);
+        esperaTimer = null;
+        caixa.classList.add("oculto");
+        if (Estado.ler().bloqueioMotivo === "premio") {
+          Estado.gravar({ bloqueadoAte: null, bloqueioMotivo: null });
+          avisar("Liberado! Você já pode jogar de novo.");
+        }
+        return;
+      }
+      alvo.textContent = formatarRegressivo(falta);
+    }
+
+    if (!estaBloqueado() || Estado.ler().bloqueioMotivo !== "premio") {
+      caixa.classList.add("oculto");
+      return;
+    }
+
+    caixa.classList.remove("oculto");
+    passo();
+    esperaTimer = setInterval(passo, 1000);
   }
 
   /* ---------- a mensagem que o cliente manda para a loja ---------- */
@@ -828,7 +914,7 @@
      ========================================================= */
 
   function abrirInicio() {
-    if (estaBloqueado()) { irPara("tela-bloqueado"); return; }
+    if (desviarSeBloqueado()) return;
 
     const st = Estado.ler();
 
@@ -904,7 +990,11 @@
     $("#btn-nao-combo").addEventListener("click", function () { responderPergunta2("nao"); });
 
     $("#btn-jogar-de-novo").addEventListener("click", function () {
-      if (estaBloqueado()) { irPara("tela-bloqueado"); return; }
+      if (estaBloqueado()) {
+        avisar("Você já jogou hoje. Volte amanhã para uma nova tentativa.");
+        desviarSeBloqueado();
+        return;
+      }
       irPara("tela-regras");
     });
   }
@@ -956,7 +1046,7 @@
 
     // o bloqueio vale em qualquer tela, inclusive se o cliente
     // abrir o link direto da unidade
-    if (estaBloqueado()) { irPara("tela-bloqueado"); return; }
+    if (desviarSeBloqueado()) return;
 
     abrirInicio();
   }
