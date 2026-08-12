@@ -154,10 +154,10 @@ valendo normalmente.
 
 | Nível | Prêmio | Pedido mínimo | Custo aprox. | Custo/mínimo | Até |
 |---|---|---|---|---|---|
-| 5 | 1 Temaki Hot | R$ 110 | R$ 10,00 (CMV) | 9,1% | 18s |
-| 4 | 10 Hot Cortesia | R$ 95 | R$ 10,00 (CMV) | 10,5% | 28s |
-| 3 | 15% de desconto | R$ 80 | R$ 12,00 | 15,0% | 40s |
-| 2 | 10% de desconto | R$ 65 | R$ 6,50 | 10,0% | 55s |
+| 5 | 1 Temaki Hot | R$ 110 | R$ 10,00 (CMV) | 9,1% | 15s |
+| 4 | 10 Hot Cortesia | R$ 95 | R$ 10,00 (CMV) | 10,5% | 24s |
+| 3 | 15% de desconto | R$ 80 | R$ 12,00 | 15,0% | 34s |
+| 2 | 10% de desconto | R$ 65 | R$ 6,50 | 10,0% | 48s |
 | 1 | 5% de desconto | R$ 50 | R$ 2,50 | 5,0% | completou |
 
 A escada sobe nos dois eixos: prêmio melhor exige mínimo maior. E o nível 3

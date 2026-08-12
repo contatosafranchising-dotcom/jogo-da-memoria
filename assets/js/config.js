@@ -38,7 +38,10 @@ const CONFIG = {
   PREVIA_MS: 1000,
 
   ERROS_PERMITIDOS: 3,      // erros CONSECUTIVOS; acertar um par zera a contagem
-  TEMPO_VIRAR_MS: 850,      // quanto tempo o par errado fica visível antes de desvirar
+  // Quanto tempo o par ERRADO fica à mostra antes de desvirar. É o botão
+  // mais direto da dificuldade: quanto menor, menos o jogador consegue
+  // decorar a carta que errou. Abaixo de 600 vira sorte, não memória.
+  TEMPO_VIRAR_MS: 700,
   BLOQUEIO_HORAS: 24,       // punição por errar 3x seguidas
 
   // ZERAR TODO MUNDO.
@@ -84,10 +87,10 @@ const CONFIG = {
    ============================================================= */
 
 const PREMIOS = [
-  { nivel: 5, ateSegundos:  18, nome: "1 Temaki Hot",    tipo: "produto",  minimo: 110, custo: 10.00, cupom: "TEMAKIJOGO", selo: "PRÊMIO MÁXIMO"  },
-  { nivel: 4, ateSegundos:  28, nome: "10 Hot Cortesia", tipo: "produto",  minimo:  95, custo: 10.00, cupom: "10HOTJOGO",  selo: "PRÊMIO RARO"    },
-  { nivel: 3, ateSegundos:  40, nome: "15% de desconto", tipo: "desconto", minimo:  80, custo: 12.00, cupom: "15OFFJOGO",  selo: "MUITO BOM"      },
-  { nivel: 2, ateSegundos:  55, nome: "10% de desconto", tipo: "desconto", minimo:  65, custo:  6.50, cupom: "10OFFJOGO",  selo: "BOA!"           },
+  { nivel: 5, ateSegundos:  15, nome: "1 Temaki Hot",    tipo: "produto",  minimo: 110, custo: 10.00, cupom: "TEMAKIJOGO", selo: "PRÊMIO MÁXIMO"  },
+  { nivel: 4, ateSegundos:  24, nome: "10 Hot Cortesia", tipo: "produto",  minimo:  95, custo: 10.00, cupom: "10HOTJOGO",  selo: "PRÊMIO RARO"    },
+  { nivel: 3, ateSegundos:  34, nome: "15% de desconto", tipo: "desconto", minimo:  80, custo: 12.00, cupom: "15OFFJOGO",  selo: "MUITO BOM"      },
+  { nivel: 2, ateSegundos:  48, nome: "10% de desconto", tipo: "desconto", minimo:  65, custo:  6.50, cupom: "10OFFJOGO",  selo: "BOA!"           },
   { nivel: 1, ateSegundos: 999, nome: "5% de desconto",  tipo: "desconto", minimo:  50, custo:  2.50, cupom: "5OFFJOGO",   selo: "VOCÊ CONSEGUIU" }
 ];
 
