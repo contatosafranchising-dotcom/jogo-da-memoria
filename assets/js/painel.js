@@ -99,7 +99,7 @@
           bloqueios: m.bloqueios || 0,
           resgates: m.resgates || 0,
           resposta: m.resposta || "pendente",     // P1 — quer o jogo
-          resposta2: m.resposta2 || "pendente"     // P2 — publicação por R$ 20,00
+          resposta2: m.resposta2 || "pendente"     // P2 — agendamento de stories por R$ 20,00
         };
       });
 
@@ -225,7 +225,7 @@
 
       // as duas respostas do final
       tr.appendChild(celulaResposta(l.resposta,  "Sim, quer",     "Agora não"));
-      tr.appendChild(celulaResposta(l.resposta2, "Sim, publicar", "Não publicar"));
+      tr.appendChild(celulaResposta(l.resposta2, "Sim, agendar", "Não agendar"));
 
       // os dois links da unidade
       tr.appendChild(celulaLink(l, false, "Link do cliente"));
@@ -288,7 +288,7 @@
   function baixarCsv() {
     const cabecalho = ["Unidade", "Codigo", "Slug", "Acessos", "Partidas", "Concluidas",
                        "Bloqueios", "Cupons",
-                       "P1 quer o jogo", "P2 publicacao R$ " + CONFIG.VALOR_COMBO,
+                       "P1 quer o jogo", "P2 agenda stories R$ " + CONFIG.VALOR_COMBO,
                        "Link do cliente", "Link do franqueado"];
 
     const escapar = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };

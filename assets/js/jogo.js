@@ -423,7 +423,7 @@
 
       // o cronômetro começa quando a última carta terminou de entrar e a
       // espiada acabou — ninguém perde tempo por causa da animação
-      const espera = Jogo.cartas.length * 55 + 430;
+      const espera = Jogo.cartas.length * 34 + 340;
       setTimeout(function () {
         if (!Jogo.emAndamento) return;
         espiar(function () {
@@ -443,7 +443,7 @@
     const ms = CONFIG.PREVIA_MS || 0;
     if (ms <= 0) { aoTerminar(); return; }
 
-    const VIRADA = 560;   // a transição da carta no CSS é de .55s
+    const VIRADA = 300;   // a transição da carta no CSS é de .28s
 
     Jogo.cartas.forEach(function (carta) { carta.classList.add("previa"); });
     avisar("Memorize as cartas!", ms + VIRADA);
@@ -525,7 +525,7 @@
           Jogo.travado = false;
           $("#tabuleiro").classList.remove("travado");
         }
-      }, 620);
+      }, 420);
 
       return;
     }
@@ -739,7 +739,7 @@
 
   /* As duas perguntas do final.
      P1 — a unidade quer o jogo?
-     P2 — a franqueadora publica e gerencia os quatro links por R$ 20,00?
+     P2 — a franqueadora agenda os links nos stories da unidade por R$ 20,00?
      As duas são feitas sempre, mesmo quem diz não na primeira: a publicação
      dos links de pedido, reserva e caixinha vale por si só. O painel da
      franqueadora mostra as duas colunas lado a lado. */
@@ -749,8 +749,12 @@
 
     const nao = resposta === "nao";
     $("#franq2-chamada").innerHTML = nao
-      ? "Mesmo sem o jogo: os links de pedido, reserva<br />e caixinha de perguntas continuam de pé."
-      : "Sua unidade não mexe em nada. A gente sobe,<br />atualiza e acompanha.";
+      ? ("Mesmo sem o jogo: o sistema agenda os stories de " +
+         "<strong>pedidos, reservas e caixinha de perguntas</strong> " +
+         "da sua unidade, no dia e na hora certa.")
+      : ("A franqueadora tem um <strong>sistema que agenda o link nos " +
+         "stories da sua unidade</strong> — no dia e na hora certa, sem " +
+         "ninguém precisar lembrar de postar.");
 
     montarCombo();
     irPara("tela-franqueado-2");
@@ -776,21 +780,22 @@
     if (jogo && publica) {
       icone = "🎉";
       titulo = "PERFEITO!<br /><span class=\"vm\">JÁ ANOTAMOS.</span>";
-      texto = "A franqueadora prepara o jogo da unidade <strong>" + nomeLoja + "</strong>, " +
-              "publica os quatro links e entra em contato para combinar a data.<br />" +
-              "Os R$ " + CONFIG.VALOR_COMBO + ",00 entram no próximo boleto de fundo.";
+      texto = "A franqueadora prepara o jogo da unidade <strong>" + nomeLoja + "</strong> e " +
+              "coloca a loja no <strong>sistema de agendamento de stories</strong>.<br />" +
+              "Os R$ " + CONFIG.VALOR_COMBO + ",00 do agendamento entram no próximo boleto de fundo.";
     } else if (jogo && !publica) {
       icone = "🎮";
       titulo = "FECHADO!<br /><span class=\"vm\">JOGO LIBERADO.</span>";
       texto = "O jogo da unidade <strong>" + nomeLoja + "</strong> vai ser preparado com o " +
               "WhatsApp da sua loja.<br />" +
-              "A publicação fica por sua conta e <strong>nada é lançado no boleto</strong>.";
+              "Sem o sistema de agendamento, quem posta nos stories é a própria loja — " +
+              "e <strong>nada é lançado no boleto</strong>.";
     } else if (!jogo && publica) {
       icone = "📣";
-      titulo = "COMBINADO!<br /><span class=\"vm\">A GENTE PUBLICA.</span>";
-      texto = "Sem o jogo, então. A franqueadora publica e mantém os links de pedidos, " +
-              "reservas e a caixinha de perguntas da unidade <strong>" + nomeLoja + "</strong>.<br />" +
-              "Os R$ " + CONFIG.VALOR_COMBO + ",00 entram no próximo boleto de fundo.";
+      titulo = "COMBINADO!<br /><span class=\"vm\">A GENTE AGENDA.</span>";
+      texto = "Sem o jogo, então. O <strong>sistema de agendamento</strong> assume os stories de " +
+              "pedidos, reservas e caixinha de perguntas da unidade <strong>" + nomeLoja + "</strong>.<br />" +
+              "Os R$ " + CONFIG.VALOR_COMBO + ",00 do agendamento entram no próximo boleto de fundo.";
     } else {
       icone = "👍";
       titulo = "TUDO BEM!<br /><span class=\"vm\">FICA O CONVITE.</span>";
@@ -808,7 +813,7 @@
     if (CONFIG.WHATS_FRANQUEADORA) {
       const msg = "Oi! Sou da unidade " + nomeLoja + ". Respondi o Jogo da Memória: " +
                   "jogo na minha loja = " + (jogo ? "SIM" : "não") + ", " +
-                  "publicação dos links pela franqueadora = " + (publica ? "SIM" : "não") + ".";
+                  "sistema de agendamento de stories = " + (publica ? "SIM" : "não") + ".";
       botaoFranq.href = "https://wa.me/" + CONFIG.WHATS_FRANQUEADORA + "?text=" + encodeURIComponent(msg);
       botaoFranq.classList.remove("oculto");
     } else {

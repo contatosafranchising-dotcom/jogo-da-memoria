@@ -484,7 +484,7 @@ input{ font-family:inherit; }
   border-radius:5.5cqw;
   border-radius:min(5.5cqw, 18px);
   transform-style:preserve-3d;
-  transition:transform .55s cubic-bezier(.3,.9,.35,1);
+  transition:transform .28s cubic-bezier(.25,.85,.3,1);   /* viradinha rapida */
   cursor:pointer;
   /* Entrada escalonada; o índice vem do JS.
      O preenchimento é "backwards", NUNCA "forwards": com forwards a animação
@@ -492,8 +492,8 @@ input{ font-family:inherit; }
      rotateY(180deg) da virada — a carta some do jogo sem nunca virar.
      Com backwards, o estado inicial vale só durante o atraso e, ao acabar,
      o transform volta para o CSS normal. */
-  animation:entrarCarta .42s cubic-bezier(.2,.8,.3,1) backwards;
-  animation-delay:calc(var(--i,0) * 55ms);
+  animation:entrarCarta .34s cubic-bezier(.2,.8,.3,1) backwards;
+  animation-delay:calc(var(--i,0) * 34ms);
   min-height:44px;   /* área de toque mínima */
 }
 @keyframes entrarCarta{

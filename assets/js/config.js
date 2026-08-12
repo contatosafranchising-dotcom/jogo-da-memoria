@@ -48,7 +48,7 @@ const CONFIG = {
   // temporada mudou, joga fora o bloqueio antigo e libera a pessoa para
   // jogar de novo. Vale para os 42 links de uma vez.
   // Só o bloqueio é apagado — o nome e a unidade continuam salvos.
-  TEMPORADA: 2,
+  TEMPORADA: 3,
   VALIDADE_DIAS: 30,        // validade do cupom
 
   /* ---------- IDENTIDADE ---------- */
@@ -57,7 +57,9 @@ const CONFIG = {
 
   /* ---------- OFERTA AO FRANQUEADO ---------- */
 
-  VALOR_COMBO: 20,          // R$ por mês no boleto de fundo
+  // R$ por mês no boleto de fundo. É o valor do SISTEMA DE AGENDAMENTO de
+  // stories da franqueadora — o jogo em si não é cobrado.
+  VALOR_COMBO: 20,
 
   // WhatsApp do time da franqueadora que recebe o "sim" do franqueado.
   // Só números, sem + e sem espaços. Vazio = o botão "Falar com a
@@ -82,10 +84,10 @@ const CONFIG = {
    ============================================================= */
 
 const PREMIOS = [
-  { nivel: 5, ateSegundos:  30, nome: "1 Temaki Hot",    tipo: "produto",  minimo: 110, custo: 10.00, cupom: "TEMAKIJOGO", selo: "PRÊMIO MÁXIMO"  },
-  { nivel: 4, ateSegundos:  45, nome: "10 Hot Cortesia", tipo: "produto",  minimo:  95, custo: 10.00, cupom: "10HOTJOGO",  selo: "PRÊMIO RARO"    },
-  { nivel: 3, ateSegundos:  60, nome: "15% de desconto", tipo: "desconto", minimo:  80, custo: 12.00, cupom: "15OFFJOGO",  selo: "MUITO BOM"      },
-  { nivel: 2, ateSegundos:  90, nome: "10% de desconto", tipo: "desconto", minimo:  65, custo:  6.50, cupom: "10OFFJOGO",  selo: "BOA!"           },
+  { nivel: 5, ateSegundos:  18, nome: "1 Temaki Hot",    tipo: "produto",  minimo: 110, custo: 10.00, cupom: "TEMAKIJOGO", selo: "PRÊMIO MÁXIMO"  },
+  { nivel: 4, ateSegundos:  28, nome: "10 Hot Cortesia", tipo: "produto",  minimo:  95, custo: 10.00, cupom: "10HOTJOGO",  selo: "PRÊMIO RARO"    },
+  { nivel: 3, ateSegundos:  40, nome: "15% de desconto", tipo: "desconto", minimo:  80, custo: 12.00, cupom: "15OFFJOGO",  selo: "MUITO BOM"      },
+  { nivel: 2, ateSegundos:  55, nome: "10% de desconto", tipo: "desconto", minimo:  65, custo:  6.50, cupom: "10OFFJOGO",  selo: "BOA!"           },
   { nivel: 1, ateSegundos: 999, nome: "5% de desconto",  tipo: "desconto", minimo:  50, custo:  2.50, cupom: "5OFFJOGO",   selo: "VOCÊ CONSEGUIU" }
 ];
 
@@ -193,8 +195,9 @@ const LOJAS = [
    ============================================================= */
 
 const COMBO_FRANQUEADO = [
-  { icone: "🛵", titulo: "Link de pedidos",       texto: "Seu delivery no topo da bio, sempre a um toque." },
-  { icone: "🎮", titulo: "Link do jogo",          texto: "Jogo da memória com o WhatsApp da SUA unidade." },
-  { icone: "📅", titulo: "Link de reservas",      texto: "Mesa reservada sem ocupar o atendimento." },
-  { icone: "💬", titulo: "Caixinha de perguntas", texto: "Post publicado e gerenciado pela franqueadora." }
+  { icone: "🗓️", titulo: "Agendamento automático",  texto: "O sistema da franqueadora programa os stories da semana inteira. A loja não precisa lembrar de postar." },
+  { icone: "🛵", titulo: "Link de pedidos",         texto: "Seu delivery no story, no horário em que o cliente tem fome." },
+  { icone: "🎮", titulo: "Link do jogo",            texto: "Jogo da memória com o WhatsApp da SUA unidade." },
+  { icone: "📅", titulo: "Link de reservas",        texto: "Mesa reservada sem ocupar o atendimento." },
+  { icone: "💬", titulo: "Caixinha de perguntas",   texto: "Publicada e respondida pela franqueadora." }
 ];

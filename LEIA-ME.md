@@ -142,7 +142,7 @@ O bloqueio de 24h mora no aparelho de cada cliente — não dá para apagar de
 fora. Para liberar todo mundo de uma vez, troque o número e publique:
 
 ```js
-TEMPORADA: 2,   // vire para 3, 4, 5...
+TEMPORADA: 3,   // vire para 4, 5, 6...
 ```
 
 Na primeira vez que o aparelho abrir qualquer um dos 42 links, o jogo vê que
@@ -154,10 +154,10 @@ valendo normalmente.
 
 | Nível | Prêmio | Pedido mínimo | Custo aprox. | Custo/mínimo | Até |
 |---|---|---|---|---|---|
-| 5 | 1 Temaki Hot | R$ 110 | R$ 10,00 (CMV) | 9,1% | 30s |
-| 4 | 10 Hot Cortesia | R$ 95 | R$ 10,00 (CMV) | 10,5% | 45s |
-| 3 | 15% de desconto | R$ 80 | R$ 12,00 | 15,0% | 60s |
-| 2 | 10% de desconto | R$ 65 | R$ 6,50 | 10,0% | 90s |
+| 5 | 1 Temaki Hot | R$ 110 | R$ 10,00 (CMV) | 9,1% | 18s |
+| 4 | 10 Hot Cortesia | R$ 95 | R$ 10,00 (CMV) | 10,5% | 28s |
+| 3 | 15% de desconto | R$ 80 | R$ 12,00 | 15,0% | 40s |
+| 2 | 10% de desconto | R$ 65 | R$ 6,50 | 10,0% | 55s |
 | 1 | 5% de desconto | R$ 50 | R$ 2,50 | 5,0% | completou |
 
 A escada sobe nos dois eixos: prêmio melhor exige mínimo maior. E o nível 3
@@ -291,11 +291,11 @@ caixinha vale por si só:
 | | Pergunta | Coluna no painel |
 |---|---|---|
 | P1 | A unidade quer o jogo? | *P1 · quer o jogo?* |
-| P2 | A franqueadora publica e gerencia os 4 links por R$ 20,00/mês? | *P2 · publicação?* |
+| P2 | A franqueadora **agenda os links nos stories** da unidade por R$ 20,00/mês? | *P2 · agenda stories?* |
 
 No topo: totais da rede, taxa de conclusão, quantas disseram sim em cada
 pergunta e a receita mensal — que vem da **pergunta 2**, não da 1: o jogo em
-si não é cobrado, o que entra no boleto é a publicação. Tem busca, filtro por
+si não é cobrado, o que entra no boleto é o sistema de agendamento de stories. Tem busca, filtro por
 qualquer uma das duas respostas, ordenação e exportação em CSV com as duas
 colunas de resposta e os dois links.
 
