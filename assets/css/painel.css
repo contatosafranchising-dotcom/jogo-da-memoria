@@ -1,0 +1,308 @@
+/* =============================================================
+   painel.css — estilos do painel da franqueadora.
+   Ferramenta interna, por isso vive separada do estilo.css do jogo:
+   mexer no painel nunca pode arriscar o visual da campanha.
+   ============================================================= */
+
+:root{
+  --vermelho:#D30303;
+  --dourado:#D4AF37;
+  --verde:#2BD861;
+  --preto:#000;
+  --fundo:#0B0B0B;
+  --painel:#141414;
+  --painel2:#1A1A1A;
+  --borda:#262626;
+  --branco:#fff;
+  --cinza:#A8A8A8;
+  --cinza-fraco:#6E6E6E;
+  --fonte:"Montserrat","Segoe UI",Arial,sans-serif;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  background:var(--fundo);
+  color:var(--branco);
+  font-family:var(--fonte);
+  font-size:14px;
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+
+button{ font-family:inherit; cursor:pointer; }
+img{ display:block; max-width:100%; }
+
+/* ---------- topo ---------- */
+
+.topo{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 22px;
+  background:#0A0A0A;
+  border-bottom:1px solid var(--borda);
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+.topo__marca{ display:flex; align-items:center; gap:14px; }
+.topo__marca img{ width:150px; }
+.topo__nome{
+  font-size:13px;
+  font-weight:700;
+  color:var(--cinza);
+  padding-left:14px;
+  border-left:1px solid var(--borda);
+}
+.topo__acoes{ display:flex; align-items:center; gap:10px; }
+
+.etiqueta{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:5px 12px;
+  border-radius:100px;
+  border:1px solid var(--borda);
+  color:var(--cinza);
+}
+.etiqueta--local   { border-color:rgba(212,175,55,.5); color:var(--dourado); }
+.etiqueta--planilha{ border-color:rgba(43,216,97,.5);  color:var(--verde); }
+
+/* ---------- área ---------- */
+
+.area{ max-width:1240px; margin:0 auto; padding:22px; }
+
+.alerta{
+  padding:12px 16px;
+  border-radius:10px;
+  background:rgba(211,3,3,.14);
+  border:1px solid rgba(211,3,3,.45);
+  color:#FFB4B4;
+  font-size:13px;
+  margin-bottom:18px;
+}
+
+/* ---------- fichas de números ---------- */
+
+.cartoes{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
+  gap:12px;
+  margin-bottom:22px;
+}
+.ficha{
+  background:linear-gradient(180deg,var(--painel2),var(--painel));
+  border:1px solid var(--borda);
+  border-radius:14px;
+  padding:16px 16px 14px;
+}
+.ficha--sim{ border-color:rgba(43,216,97,.4); }
+.ficha--sim .ficha__valor{ color:var(--verde); }
+
+.ficha__rotulo{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  color:var(--cinza-fraco);
+}
+.ficha__valor{
+  display:block;
+  font-size:32px;
+  font-weight:900;
+  line-height:1.15;
+  margin:4px 0 2px;
+  font-variant-numeric:tabular-nums;
+}
+.ficha__nota{ font-size:11.5px; color:var(--cinza-fraco); }
+
+/* ---------- controles ---------- */
+
+.controles{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.entrada{
+  flex:1 1 230px;
+  min-width:0;
+  padding:11px 14px;
+  border-radius:10px;
+  background:var(--painel);
+  border:1px solid var(--borda);
+  color:var(--branco);
+  font-family:inherit;
+  font-size:13.5px;
+}
+.entrada--curta{ flex:0 1 200px; }
+.entrada::placeholder{ color:var(--cinza-fraco); }
+.entrada:focus{ outline:none; border-color:var(--vermelho); }
+.entrada option{ background:var(--painel); }
+
+.btn{
+  padding:11px 18px;
+  border:none;
+  border-radius:10px;
+  background:var(--vermelho);
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
+  transition:filter .15s ease, transform .1s ease;
+  white-space:nowrap;
+}
+.btn:hover{ filter:brightness(1.14); }
+.btn:active{ transform:scale(.97); }
+.btn--fantasma{ background:transparent; border:1px solid var(--borda); color:var(--cinza); }
+.btn--perigo{ background:transparent; border:1px solid rgba(211,3,3,.5); color:#FF7A7A; }
+
+/* ---------- endereço público ---------- */
+
+.caixa-endereco{
+  background:var(--painel);
+  border:1px solid var(--borda);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:18px;
+}
+.caixa-endereco label{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--cinza-fraco);
+  margin-bottom:8px;
+}
+.dica{ font-size:12px; color:var(--cinza-fraco); margin-top:8px; }
+
+/* ---------- tabela ---------- */
+
+.tabela-area{
+  background:var(--painel);
+  border:1px solid var(--borda);
+  border-radius:14px;
+  overflow-x:auto;
+}
+.tabela{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+  min-width:900px;
+}
+.tabela th{
+  text-align:left;
+  padding:13px 14px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--cinza-fraco);
+  background:#101010;
+  border-bottom:1px solid var(--borda);
+  white-space:nowrap;
+  position:sticky;
+  top:0;
+}
+.tabela td{
+  padding:12px 14px;
+  border-bottom:1px solid #1C1C1C;
+  vertical-align:middle;
+}
+.tabela tr:last-child td{ border-bottom:none; }
+.tabela tbody tr:hover{ background:rgba(255,255,255,.028); }
+.num{ text-align:right; font-variant-numeric:tabular-nums; }
+td.num{ text-align:right; font-variant-numeric:tabular-nums; }
+.zero{ color:#4A4A4A; }
+
+.nome-loja{ font-weight:700; white-space:nowrap; }
+.cod-loja{ font-size:10.5px; color:var(--cinza-fraco); font-weight:600; }
+
+.marcador{
+  display:inline-block;
+  padding:4px 11px;
+  border-radius:100px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.marcador--sim     { background:rgba(43,216,97,.16);  color:var(--verde);  border:1px solid rgba(43,216,97,.4); }
+.marcador--nao     { background:rgba(211,3,3,.14);    color:#FF8A8A;       border:1px solid rgba(211,3,3,.4); }
+.marcador--pendente{ background:rgba(255,255,255,.05);color:var(--cinza-fraco); border:1px solid var(--borda); }
+
+.celula-link{ display:flex; align-items:center; gap:8px; }
+.link-loja{
+  font-size:11.5px;
+  color:var(--cinza);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  max-width:190px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.mini{
+  padding:6px 11px;
+  font-size:11px;
+  font-weight:700;
+  border-radius:7px;
+  border:1px solid var(--borda);
+  background:transparent;
+  color:var(--dourado);
+  white-space:nowrap;
+}
+.mini:hover{ background:rgba(212,175,55,.12); }
+
+.vazio{ padding:34px; text-align:center; color:var(--cinza-fraco); }
+
+/* ---------- rodapé ---------- */
+
+.rodape{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid var(--borda);
+  font-size:12px;
+  color:var(--cinza-fraco);
+}
+
+/* ---------- aviso flutuante ---------- */
+
+.aviso-flutuante{
+  position:fixed;
+  left:50%;
+  bottom:26px;
+  transform:translateX(-50%) translateY(24px);
+  z-index:90;
+  padding:12px 22px;
+  border-radius:100px;
+  background:#181818;
+  border:1px solid var(--borda);
+  box-shadow:0 12px 34px rgba(0,0,0,.7);
+  font-size:13.5px;
+  font-weight:600;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+}
+.aviso-flutuante.visivel{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+.oculto{ display:none !important; }
+
+@media (max-width:640px){
+  .topo{ padding:12px 14px; }
+  .topo__nome{ display:none; }
+  .area{ padding:14px; }
+  .ficha__valor{ font-size:26px; }
+}

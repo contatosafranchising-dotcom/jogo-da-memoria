@@ -1,0 +1,12 @@
+# Arquivos de origem do design — ficam só na máquina.
+# São pesados (~100 MB) e não são necessários para o site funcionar:
+# as versões otimizadas já estão em /assets/img/.
+fotos produtos/
+jogo html/
+tentativas_esgotadas_casa_do_sushi.html
+Logo S.A Branca.png
+
+# lixo de sistema
+Thumbs.db
+.DS_Store
+desktop.ini

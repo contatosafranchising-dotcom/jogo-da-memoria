@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Painel da Franqueadora | Jogo da Memória</title>
+<link rel="icon" href="assets/img/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/painel.css" />
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo__marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi" />
+    <span class="topo__nome">Painel do Jogo da Memória</span>
+  </div>
+  <div class="topo__acoes">
+    <span class="etiqueta" id="etiqueta-origem">carregando...</span>
+    <button class="btn btn--fantasma" id="btn-atualizar">Atualizar</button>
+  </div>
+</header>
+
+<main class="area">
+
+  <p class="alerta oculto" id="alerta"></p>
+
+  <!-- ---------- números do topo ---------- -->
+  <section class="cartoes" aria-label="Resumo geral">
+    <div class="ficha">
+      <span class="ficha__rotulo">Acessos</span>
+      <strong class="ficha__valor" id="n-acessos">0</strong>
+      <span class="ficha__nota">aberturas do link</span>
+    </div>
+    <div class="ficha">
+      <span class="ficha__rotulo">Partidas</span>
+      <strong class="ficha__valor" id="n-inicios">0</strong>
+      <span class="ficha__nota">jogos começados</span>
+    </div>
+    <div class="ficha">
+      <span class="ficha__rotulo">Concluídas</span>
+      <strong class="ficha__valor" id="n-conclusoes">0</strong>
+      <span class="ficha__nota"><span id="n-taxa">0%</span> de quem começou</span>
+    </div>
+    <div class="ficha">
+      <span class="ficha__rotulo">Cupons enviados</span>
+      <strong class="ficha__valor" id="n-resgates">0</strong>
+      <span class="ficha__nota">clicaram no WhatsApp</span>
+    </div>
+    <div class="ficha ficha--sim">
+      <span class="ficha__rotulo">Lojas que disseram SIM</span>
+      <strong class="ficha__valor" id="n-sim">0</strong>
+      <span class="ficha__nota">de <span id="n-total-lojas">0</span> unidades</span>
+    </div>
+    <div class="ficha">
+      <span class="ficha__rotulo">Receita se todas aceitarem</span>
+      <strong class="ficha__valor" id="n-receita">R$ 0</strong>
+      <span class="ficha__nota">por mês, no boleto de fundo</span>
+    </div>
+  </section>
+
+  <!-- ---------- controles ---------- -->
+  <section class="controles">
+    <input class="entrada" id="busca" type="search" placeholder="Buscar unidade..." autocomplete="off" />
+
+    <select class="entrada entrada--curta" id="filtro-resposta">
+      <option value="">Todas as respostas</option>
+      <option value="sim">Só quem disse SIM</option>
+      <option value="nao">Só quem disse NÃO</option>
+      <option value="pendente">Só quem não respondeu</option>
+    </select>
+
+    <select class="entrada entrada--curta" id="ordem">
+      <option value="nome">Ordenar por nome</option>
+      <option value="acessos">Ordenar por acessos</option>
+      <option value="conclusoes">Ordenar por conclusões</option>
+      <option value="resgates">Ordenar por cupons</option>
+    </select>
+
+    <button class="btn" id="btn-copiar-links">Copiar os 42 links</button>
+    <button class="btn btn--fantasma" id="btn-csv">Baixar CSV</button>
+  </section>
+
+  <!-- ---------- endereço público ---------- -->
+  <section class="caixa-endereco">
+    <label for="base-url">Endereço público do jogo (o painel monta os links a partir daqui)</label>
+    <input class="entrada" id="base-url" type="url" placeholder="https://seusite.com/index.html" />
+    <p class="dica">
+      Enquanto estiver vazio, o painel usa o endereço desta própria página.
+      Depois de publicar no GitHub Pages ou Vercel, cole aqui o endereço final.
+    </p>
+  </section>
+
+  <!-- ---------- tabela ---------- -->
+  <section class="tabela-area">
+    <table class="tabela" id="tabela">
+      <thead>
+        <tr>
+          <th>Unidade</th>
+          <th class="num">Acessos</th>
+          <th class="num">Partidas</th>
+          <th class="num">Concluídas</th>
+          <th class="num">Bloqueios</th>
+          <th class="num">Cupons</th>
+          <th>Quer o jogo?</th>
+          <th>Link da unidade</th>
+        </tr>
+      </thead>
+      <tbody id="corpo-tabela"></tbody>
+    </table>
+    <p class="vazio oculto" id="vazio">Nenhuma unidade encontrada com esse filtro.</p>
+  </section>
+
+  <footer class="rodape">
+    <p id="rodape-modo"></p>
+    <button class="btn btn--perigo" id="btn-limpar">Limpar dados de teste deste navegador</button>
+  </footer>
+</main>
+
+<div class="aviso-flutuante" id="aviso-flutuante" role="status" aria-live="polite"></div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/painel.js"></script>
+</body>
+</html>

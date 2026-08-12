@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#000000" />
+<meta name="description" content="Jogue o Jogo da Memória da Casa do Sushi, complete no menor tempo e desbloqueie seu cupom." />
+<title>Jogue e Ganhe | Casa do Sushi</title>
+
+<link rel="icon" href="assets/img/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/estilo.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     TELA 0 — ESCOLHA DA UNIDADE
+     Só aparece quando o link vem sem ?loja=. Cada unidade tem o
+     link dela pronto no painel: index.html?loja=camboriu
+     ============================================================ -->
+<main class="tela" id="tela-loja">
+  <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
+  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+
+  <header class="marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
+  </header>
+
+  <div class="conteudo">
+    <h1 class="titulo titulo--menor mt-20">QUAL É A<br /><span class="vm">SUA UNIDADE?</span></h1>
+    <p class="chamada">Escolha a loja onde você pretende<br />usar o seu prêmio.</p>
+
+    <div class="cartao mt-20">
+      <label class="so-leitor" for="busca-loja">Buscar unidade</label>
+      <input class="campo" id="busca-loja" type="search" placeholder="Buscar cidade ou bairro..." autocomplete="off" />
+      <div class="lista-lojas" id="lista-lojas" role="listbox" aria-label="Unidades da Casa do Sushi"></div>
+      <button class="botao mt-16" id="btn-confirma-loja" disabled>
+        CONTINUAR <span class="botao__seta" aria-hidden="true">&rsaquo;</span>
+      </button>
+    </div>
+  </div>
+</main>
+
+
+<!-- ============================================================
+     TELA 1 — NOME (capa)
+     ============================================================ -->
+<main class="tela" id="tela-nome">
+  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+
+  <header class="marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
+  </header>
+
+  <div class="conteudo">
+    <h1 class="titulo mt-16">
+      JOGUE<br />
+      <span>E <span class="circulado vm">GANHE!</span></span>
+    </h1>
+
+    <p class="chamada">
+      Sua sorte pode deixar o próximo<br />sushi <span class="vm">ainda melhor.</span>
+    </p>
+    <p class="chamada mt-12">
+      <strong>Preencha seu nome, jogue e<br />ganhe um <span class="vm">cupom de desconto!</span></strong>
+    </p>
+
+    <div class="cartao mt-20">
+      <img class="torii" src="assets/img/deco/torii.png" alt="" aria-hidden="true" />
+
+      <h2 class="pergunta" id="pergunta-nome">Qual é o seu nome?</h2>
+
+      <label class="so-leitor" for="campo-nome">Seu nome</label>
+      <input class="campo" id="campo-nome" type="text" placeholder="Digite seu nome"
+             autocomplete="given-name" maxlength="28" enterkeyhint="go" />
+
+      <button class="botao mt-16" id="btn-jogar">
+        JOGAR AGORA <span class="botao__seta" aria-hidden="true">&rsaquo;</span>
+      </button>
+
+      <p class="rodape-cartao">Preparado(a) para <strong>descobrir seu prêmio?</strong></p>
+
+      <div class="presente">
+        <img src="assets/img/deco/ic-gift2.png" alt="" aria-hidden="true" />
+        <span>É rápido, é fácil e você já<br />sai com <span class="vm"><strong>seu desconto</strong></span>.</span>
+      </div>
+
+      <p class="aviso" id="rodape-loja"></p>
+    </div>
+  </div>
+
+  <div class="rodape-foto"><img src="assets/img/deco/food-capa.jpg" alt="" aria-hidden="true" /></div>
+</main>
+
+
+<!-- ============================================================
+     TELA 2 — COMO JOGAR
+     ============================================================ -->
+<main class="tela" id="tela-regras">
+  <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
+  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+
+  <header class="marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
+  </header>
+
+  <div class="conteudo">
+    <h1 class="titulo titulo--menor mt-16">COMO<br /><span class="vm">JOGAR?</span></h1>
+
+    <p class="chamada">
+      Encontre os pares de sushi no<br />
+      <span class="vm"><strong>menor tempo</strong></span> possível.<br />
+      Quanto menor o tempo,<br />
+      <span class="vm"><strong>melhor o seu prêmio!</strong></span> 🍣
+    </p>
+
+    <section class="mt-20" aria-label="Regras do jogo">
+      <article class="regra">
+        <div class="regra__icone"><img src="assets/img/deco/ic-cards.png" alt="" /></div>
+        <div class="regra__barra" aria-hidden="true"></div>
+        <div class="regra__texto">
+          <h3>1. Encontre os pares</h3>
+          <p>Vire as cartas e encontre os sushis iguais.</p>
+        </div>
+      </article>
+
+      <article class="regra">
+        <div class="regra__icone"><img src="assets/img/deco/ic-timer.png" alt="" /></div>
+        <div class="regra__barra" aria-hidden="true"></div>
+        <div class="regra__texto">
+          <h3>2. Seja rápido</h3>
+          <p>Complete o jogo no menor tempo possível.<br />
+             <span class="vm">Quanto menor o tempo, melhor o prêmio!</span></p>
+        </div>
+      </article>
+
+      <article class="regra">
+        <div class="regra__icone"><img src="assets/img/deco/ic-x.png" alt="" /></div>
+        <div class="regra__barra" aria-hidden="true"></div>
+        <div class="regra__texto">
+          <h3>3. Cuidado com os erros</h3>
+          <p>Errou <span class="vm">3 vezes seguidas?</span> Sua rodada termina e você poderá tentar novamente <span class="vm">amanhã.</span></p>
+        </div>
+      </article>
+
+      <article class="regra">
+        <div class="regra__icone"><img src="assets/img/deco/ic-gift2.png" alt="" /></div>
+        <div class="regra__barra" aria-hidden="true"></div>
+        <div class="regra__texto">
+          <h3>4. Desbloqueou o prêmio?</h3>
+          <p>Envie a mensagem para a loja e utilize seu prêmio em até <span class="vm">30 dias.</span></p>
+        </div>
+      </article>
+    </section>
+
+    <div class="remate">
+      <img src="assets/img/deco/ic-bolt.png" alt="" aria-hidden="true" />
+      <h2>Quanto menor o tempo,<br /><span class="vm">melhor o prêmio.</span> ⚡🍣</h2>
+    </div>
+
+    <p class="chamada">Memória afiada? Então bora jogar!</p>
+
+    <button class="botao mt-16" id="btn-comecar">
+      COMEÇAR O JOGO <span class="botao__seta" aria-hidden="true">&rsaquo;</span>
+    </button>
+  </div>
+
+  <div class="rodape-foto"><img src="assets/img/deco/food-regras.jpg" alt="" aria-hidden="true" /></div>
+</main>
+
+
+<!-- ============================================================
+     TELA 3 — TABULEIRO
+     ============================================================ -->
+<main class="tela" id="tela-jogo">
+  <img class="deco deco--folhas-b" src="assets/img/deco/leaves-jogo.png" alt="" aria-hidden="true" />
+  <img class="deco deco--pincel" src="assets/img/deco/brush-jogo.png" alt="" aria-hidden="true" />
+
+  <header class="marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
+  </header>
+
+  <div class="conteudo">
+    <div class="placar placar--fixo">
+      <div class="caixa">
+        <img class="crono__icone" src="assets/img/deco/ic-stopwatch.png" alt="" aria-hidden="true" />
+        <div class="caixa__rotulo">SEU TEMPO</div>
+        <div class="crono" id="crono">
+          <img class="crono__pincel" src="assets/img/deco/timer-brush.png" alt="" aria-hidden="true" />
+          <span class="crono__valor" id="crono-valor" role="timer" aria-live="off">00:00</span>
+        </div>
+      </div>
+
+      <div class="caixa">
+        <div class="caixa__rotulo">ERROS</div>
+        <div class="erros" id="erros" aria-label="Erros consecutivos">
+          <span class="erro-bola"></span>
+          <span class="erro-bola"></span>
+          <span class="erro-bola"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="instrucao">
+      <h2>Encontre todos os pares! 🍣</h2>
+      <p>Quanto <span class="vm">menor o tempo, melhor o prêmio.</span></p>
+    </div>
+
+    <div class="tabuleiro" id="tabuleiro" aria-label="Tabuleiro do jogo da memória"></div>
+  </div>
+
+  <div class="rodape-foto"><img src="assets/img/deco/food-jogo.jpg" alt="" aria-hidden="true" /></div>
+</main>
+
+
+<!-- ============================================================
+     TELA 4 — PRÊMIO
+     ============================================================ -->
+<main class="tela" id="tela-premio">
+  <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
+  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+
+  <header class="marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
+  </header>
+
+  <div class="conteudo">
+    <h1 class="titulo titulo--menor mt-12" id="premio-saudacao">PARABÉNS!</h1>
+    <p class="chamada" id="premio-tempo"></p>
+
+    <div class="cartao mt-16">
+      <div class="centro"><span class="selo" id="premio-selo">PRÊMIO MÁXIMO</span></div>
+      <p class="cupom__rotulo centro">Você desbloqueou</p>
+      <h2 class="premio-nome" id="premio-nome">1 TEMAKI HOT</h2>
+
+      <div class="medidor" id="medidor" aria-hidden="true">
+        <span class="medidor__passo"></span><span class="medidor__passo"></span>
+        <span class="medidor__passo"></span><span class="medidor__passo"></span>
+        <span class="medidor__passo"></span>
+      </div>
+      <p class="aviso" id="premio-nivel">Nível 5 de 5</p>
+
+      <div class="cupom">
+        <div class="cupom__rotulo">Cupom Casa do Sushi</div>
+        <div class="cupom__codigo" id="cupom-codigo">SA-XXX-N0-0000</div>
+        <div class="cupom__linha">
+          <span>Pedido mínimo</span><b id="cupom-minimo">R$ 50,00</b>
+        </div>
+        <div class="cupom__linha">
+          <span>Válido até</span><b id="cupom-validade">--/--/----</b>
+        </div>
+        <div class="cupom__linha">
+          <span>Unidade</span><b id="cupom-loja">—</b>
+        </div>
+        <div class="centro"><button class="copiar" id="btn-copiar">Copiar código</button></div>
+      </div>
+
+      <a class="botao botao--whats mt-16" id="btn-whats" href="#" target="_blank" rel="noopener">
+        ENVIAR E RECEBER MEU PRÊMIO
+      </a>
+
+      <p class="aviso">
+        O cupom vale por <strong>30 dias</strong> e é válido apenas na unidade escolhida.<br />
+        O atendente confere o pedido mínimo antes de aplicar.
+      </p>
+    </div>
+
+    <button class="botao botao--fantasma mt-12 oculto" id="btn-ir-franqueado">
+      Continuar &rsaquo;
+    </button>
+  </div>
+
+  <div class="rodape-foto"><img src="assets/img/deco/food-capa.jpg" alt="" aria-hidden="true" /></div>
+</main>
+
+
+<!-- ============================================================
+     TELA 5 — TENTATIVAS ESGOTADAS (bloqueio de 24h)
+     ============================================================ -->
+<main class="tela" id="tela-bloqueado">
+  <div class="cartas-fundo" id="cartas-fundo" aria-hidden="true"></div>
+  <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
+  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+
+  <header class="marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
+  </header>
+
+  <div class="conteudo">
+    <div class="centro mt-12">
+      <img src="assets/img/deco/ops-marcas.png" alt="" aria-hidden="true"
+           style="width:64px;margin:0 auto -6px;" />
+    </div>
+    <h1 class="titulo">OPS! 🍣</h1>
+    <p class="chamada">Você errou <span class="vm"><strong>3 vezes</strong></span> seguidas.</p>
+
+    <div class="cartao mt-16">
+      <img class="ampulheta" src="assets/img/deco/ic-ampulheta.png" alt="" aria-hidden="true" />
+      <h2 class="titulo titulo--menor" style="font-size:clamp(26px,8vw,34px)">
+        SUAS TENTATIVAS<br /><span class="vm">DE HOJE ACABARAM</span>
+      </h2>
+      <p class="chamada">Mas <span class="vm"><strong>amanhã</strong></span> tem mais!</p>
+      <p class="chamada mt-8" style="font-size:14px">
+        Volte em 24h para jogar novamente<br />e tentar desbloquear seu prêmio.
+      </p>
+    </div>
+
+    <p class="rotulo-forte">Próxima tentativa em</p>
+
+    <div class="regressivo">
+      <img src="assets/img/deco/ic-crono-vermelho.png" alt="" aria-hidden="true" />
+      <span class="regressivo__valor" id="regressivo" role="timer" aria-live="off">23:59:59</span>
+    </div>
+
+    <p class="chamada mt-16">
+      Treine a memória porque<br />os sushis te esperam <span class="vm"><strong>amanhã.</strong></span> 🍣
+    </p>
+
+    <button class="botao botao--vazado mt-16" id="btn-voltar-inicio">
+      <span class="botao__seta" aria-hidden="true">&lsaquo;</span> VOLTAR AO INÍCIO
+    </button>
+  </div>
+
+  <div class="rodape-foto"><img src="assets/img/deco/food-bloq.jpg" alt="" aria-hidden="true" /></div>
+</main>
+
+
+<!-- ============================================================
+     TELA 6 — OFERTA AO FRANQUEADO
+     Aparece só quando CONFIG.MODO_DEMO_FRANQUEADO = true.
+     ============================================================ -->
+<main class="tela" id="tela-franqueado">
+  <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
+  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+
+  <header class="marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
+  </header>
+
+  <div class="conteudo">
+    <div class="centro"><span class="faixa-topo">Para o franqueado</span></div>
+
+    <h1 class="titulo titulo--menor">
+      VOCÊ QUER ESSE JOGO<br /><span class="vm">NA SUA UNIDADE?</span>
+    </h1>
+
+    <p class="chamada">
+      Foi exatamente isso que o seu cliente<br />
+      acabou de viver — com o <strong>WhatsApp da<br /><span id="franq-loja">sua loja</span></strong> no final.
+    </p>
+
+    <div class="cartao mt-20">
+      <p class="cupom__rotulo centro mb-8">A franqueadora publica e gerencia</p>
+      <div id="lista-combo"></div>
+
+      <div class="preco">
+        <div class="preco__valor">R$ <span id="valor-combo">20</span><small>,00</small></div>
+        <p class="preco__nota">por mês, no boleto de fundo.<br />Sem contrato novo, sem trabalho pra loja.</p>
+      </div>
+
+      <div class="par-botoes">
+        <button class="botao" id="btn-quero">SIM, QUERO NA MINHA LOJA</button>
+        <button class="botao botao--fantasma" id="btn-nao-quero">Agora não, obrigado</button>
+      </div>
+    </div>
+
+    <p class="aviso">
+      Sua resposta vai direto para o painel da franqueadora.<br />
+      Nenhuma cobrança é feita agora.
+    </p>
+  </div>
+
+  <div class="rodape-foto"><img src="assets/img/deco/food-regras.jpg" alt="" aria-hidden="true" /></div>
+</main>
+
+
+<!-- ============================================================
+     TELA 7 — CONFIRMAÇÃO DA RESPOSTA DO FRANQUEADO
+     ============================================================ -->
+<main class="tela" id="tela-obrigado">
+  <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
+  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+
+  <header class="marca">
+    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
+  </header>
+
+  <div class="conteudo" style="margin-top:8vh">
+    <div class="cartao">
+      <div class="centro" style="font-size:56px;line-height:1" id="obrigado-icone">🎉</div>
+      <h1 class="titulo titulo--menor mt-12" id="obrigado-titulo">RESPOSTA<br /><span class="vm">REGISTRADA!</span></h1>
+      <p class="chamada" id="obrigado-texto"></p>
+
+      <a class="botao botao--whats mt-20" id="btn-falar-franqueadora" href="#" target="_blank" rel="noopener">
+        FALAR COM A FRANQUEADORA
+      </a>
+      <button class="botao botao--fantasma mt-12" id="btn-jogar-de-novo">Ver o jogo de novo</button>
+    </div>
+  </div>
+
+  <div class="rodape-foto"><img src="assets/img/deco/food-capa.jpg" alt="" aria-hidden="true" /></div>
+</main>
+
+
+<!-- aviso curto que sobe do rodapé; substitui o alert() -->
+<div class="aviso-flutuante" id="aviso-flutuante" role="status" aria-live="polite"></div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/jogo.js"></script>
+</body>
+</html>

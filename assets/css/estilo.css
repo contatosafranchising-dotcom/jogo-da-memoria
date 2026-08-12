@@ -1,0 +1,1016 @@
+/* =============================================================
+   CASA DO SUSHI — JOGO DA MEMÓRIA
+   Arquivo único de estilos. Mobile-first (testado a partir de 320px).
+   ============================================================= */
+
+/* ---------- 1. TOKENS ---------- */
+
+:root{
+  --vermelho:      #D30303;
+  --vermelho-vivo: #FF1A1A;
+  --vermelho-escuro:#8B0000;
+  --dourado:       #D4AF37;
+  --oliva:         #7D7237;
+
+  --preto:      #000000;
+  --carvao:     #0A0A0A;
+  --painel:     #141414;
+  --painel-alto:#1C1C1C;
+  --borda:      #2A2A2A;
+
+  --branco:     #FFFFFF;
+  --cinza:      #B8B8B8;
+  --cinza-fraco:#7A7A7A;
+
+  --raio:       18px;
+  --raio-carta: 14px;
+  --largura:    440px;   /* largura máxima da coluna de conteúdo */
+
+  --fonte: "Montserrat", "Segoe UI", Arial, Helvetica, sans-serif;
+
+  /* onda seigaiha da marca: ladrilho de 60x60 que se repete sem emenda.
+     1,2 KB — mais leve que o SVG equivalente e desenha igual em todo navegador. */
+  --seigaiha: url("../img/deco/seigaiha.png");
+}
+
+/* ---------- 2. BASE ---------- */
+
+*{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+
+html{ scroll-behavior:smooth; }
+
+body{
+  min-height:100vh;
+  min-height:100dvh;
+  background:var(--preto);
+  background-image:var(--seigaiha);
+  background-size:60px 60px;
+  color:var(--branco);
+  font-family:var(--fonte);
+  font-weight:500;
+  line-height:1.45;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+img{ max-width:100%; display:block; user-select:none; -webkit-user-drag:none; }
+button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+input{ font-family:inherit; }
+
+/* ---------- 3. LAYOUT DAS TELAS ---------- */
+
+/* cada tela é uma coluna centralizada, com a arte decorativa presa nas bordas */
+.tela{
+  display:none;
+  position:relative;
+  width:100%;
+  max-width:var(--largura);
+  margin:0 auto;
+  min-height:100vh;
+  min-height:100dvh;
+  padding:0 20px 40px;
+  overflow:hidden;
+}
+.tela.ativa{
+  display:flex;
+  flex-direction:column;
+  animation:entrarTela .45s cubic-bezier(.2,.7,.3,1) both;
+}
+
+@keyframes entrarTela{
+  from{ opacity:0; transform:translateY(14px); }
+  to  { opacity:1; transform:none; }
+}
+
+/* saída, aplicada por 1 frame antes da troca */
+.tela.saindo{ animation:sairTela .25s ease-in both; }
+@keyframes sairTela{
+  from{ opacity:1; transform:none; }
+  to  { opacity:0; transform:translateY(-10px); }
+}
+
+/* ---------- 4. ARTE DECORATIVA ----------
+   As folhas, pinceladas e ícones saíram do próprio layout aprovado.
+   Os PNGs já vêm com transparência de verdade (o preto do recorte virou
+   canal alfa), então encaixam em qualquer fundo sem caixa preta em volta. */
+
+.deco{
+  position:absolute;
+  pointer-events:none;
+  z-index:0;
+  opacity:.9;
+}
+.deco--folhas    { top:0; left:-14px;  width:44%; }
+.deco--pincel    { top:0; right:-18px; width:42%; }
+.deco--folhas-b  { top:0; left:-20px;  width:34%; opacity:.75; }
+
+/* fotos de comida do rodapé: entram por baixo, com o topo dissolvendo no preto */
+.rodape-foto{
+  position:relative;
+  width:100vw;
+  left:50%;
+  transform:translateX(-50%);
+  margin-top:auto;
+  z-index:0;
+  pointer-events:none;
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 22%, #000 100%);
+          mask-image:linear-gradient(to bottom, transparent 0%, #000 22%, #000 100%);
+}
+.rodape-foto img{ width:100%; }
+
+/* tudo que é conteúdo fica acima da arte */
+.conteudo{ position:relative; z-index:2; width:100%; }
+
+/* ---------- 5. CABEÇALHO / LOGO ---------- */
+
+.marca{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:26px 0 4px;
+}
+.marca img{ width:min(62%,230px); }
+.marca__assinatura{
+  margin-top:7px;
+  font-size:9.5px;
+  letter-spacing:.30em;
+  font-weight:600;
+  color:#E6E6E6;
+  text-align:center;
+}
+
+/* ---------- 6. TIPOGRAFIA ---------- */
+
+.titulo{
+  font-weight:900;
+  font-size:clamp(44px,15vw,68px);
+  line-height:.88;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+  text-align:center;
+}
+.titulo--menor{ font-size:clamp(34px,11vw,48px); }
+.vm{ color:var(--vermelho-vivo); }
+.dourado{ color:var(--dourado); }
+
+.chamada{
+  text-align:center;
+  color:#DCDCDC;
+  font-size:15.5px;
+  line-height:1.5;
+  margin-top:14px;
+}
+.chamada strong{ color:var(--branco); font-weight:700; }
+.chamada .vm{ font-weight:700; }
+
+/* o círculo de pincel em volta de "GANHE!" é a arte original do layout,
+   esticada atrás da palavra — nada de borda de CSS fingindo ser pincelada */
+.circulado{ position:relative; display:inline-block; }
+.circulado::after{
+  content:"";
+  position:absolute;
+  left:-11%; right:-11%;
+  top:2%; bottom:-14%;
+  background:url("../img/deco/timer-brush.png") center/100% 100% no-repeat;
+  transform:rotate(-2deg);
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* ---------- 7. CARTÃO / PAINEL ---------- */
+
+.cartao{
+  position:relative;
+  z-index:2;
+  background:linear-gradient(180deg, rgba(30,30,30,.97), rgba(16,16,16,.97));
+  border:1px solid var(--borda);
+  border-radius:26px;
+  padding:26px 20px 24px;
+  box-shadow:0 18px 50px rgba(0,0,0,.6);
+}
+
+/* ---------- 8. BOTÕES ---------- */
+
+.botao{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  width:100%;
+  min-height:58px;
+  padding:16px 22px;
+  border-radius:12px;
+  background:linear-gradient(180deg,#F01515,#B60000);
+  color:var(--branco);
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  text-decoration:none;
+  box-shadow:0 10px 26px rgba(211,3,3,.42);
+  overflow:hidden;
+  transition:transform .12s ease, box-shadow .2s ease, filter .2s ease;
+}
+.botao:active{ transform:scale(.975); box-shadow:0 5px 16px rgba(211,3,3,.36); }
+.botao[disabled]{ filter:grayscale(.65) brightness(.6); pointer-events:none; }
+
+/* brilho que atravessa o botão de tempos em tempos */
+.botao::before{
+  content:"";
+  position:absolute;
+  top:0; left:-70%;
+  width:45%; height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);
+  transform:skewX(-18deg);
+  animation:brilho 3.6s ease-in-out infinite;
+}
+@keyframes brilho{
+  0%,62%{ left:-70%; }
+  88%,100%{ left:135%; }
+}
+
+.botao__seta{
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  width:34px; height:34px;
+  border-radius:50%;
+  background:#0D0D0D;
+  font-size:16px;
+  font-weight:900;
+}
+
+.botao--whats{ background:linear-gradient(180deg,#2BD861,#128C3E); box-shadow:0 10px 26px rgba(18,140,62,.4); }
+.botao--vazado{
+  background:transparent;
+  border:2px solid var(--vermelho);
+  color:var(--branco);
+  box-shadow:none;
+  font-size:16px;
+}
+.botao--vazado::before{ display:none; }
+.botao--vazado .botao__seta{ background:transparent; border:2px solid var(--vermelho); color:var(--vermelho); }
+.botao--fantasma{
+  background:transparent;
+  border:1px solid var(--borda);
+  color:var(--cinza);
+  box-shadow:none;
+  font-size:14px;
+  min-height:50px;
+  text-transform:none;
+  font-weight:600;
+}
+.botao--fantasma::before{ display:none; }
+
+/* ---------- 9. CAMPO DE TEXTO ---------- */
+
+.campo{
+  width:100%;
+  min-height:60px;
+  padding:16px 20px;
+  border-radius:12px;
+  background:rgba(0,0,0,.45);
+  border:1.5px solid #3A3A3A;
+  color:var(--branco);
+  font-size:17px;
+  font-weight:500;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.campo::placeholder{ color:#6E6E6E; }
+.campo:focus{
+  outline:none;
+  border-color:var(--vermelho);
+  box-shadow:0 0 0 4px rgba(211,3,3,.16);
+}
+.campo.erro{ border-color:var(--vermelho-vivo); animation:tremer .4s; }
+
+@keyframes tremer{
+  0%,100%{ transform:translateX(0); }
+  20%{ transform:translateX(-8px); }
+  40%{ transform:translateX(7px); }
+  60%{ transform:translateX(-5px); }
+  80%{ transform:translateX(3px); }
+}
+
+/* seletor de loja */
+.campo--select{
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23D30303' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 20px center;
+  padding-right:48px;
+}
+.campo--select option{ background:#141414; color:#fff; }
+
+/* ---------- 10. TELA 1: NOME (CAPA) ---------- */
+
+.torii{
+  width:64px;
+  margin:0 auto 14px;
+  animation:pulsarTorii 3.2s ease-in-out infinite;
+}
+@keyframes pulsarTorii{
+  0%,100%{ transform:scale(1);    opacity:.95; }
+  50%    { transform:scale(1.07); opacity:1;   }
+}
+
+.pergunta{
+  text-align:center;
+  font-size:23px;
+  font-weight:800;
+  margin-bottom:16px;
+}
+
+.rodape-cartao{
+  text-align:center;
+  font-size:14px;
+  color:#CFCFCF;
+  margin-top:16px;
+}
+.rodape-cartao strong{ color:var(--branco); }
+
+.presente img{ width:38px; height:auto; flex:0 0 auto; }
+.presente{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  justify-content:center;
+  margin-top:14px;
+  font-size:13.5px;
+  color:#CFCFCF;
+  line-height:1.35;
+  text-align:left;
+}
+
+/* ---------- 11. TELA 2: REGRAS ---------- */
+
+.regra{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  background:rgba(20,20,20,.94);
+  border:1px solid #232323;
+  border-radius:20px;
+  padding:16px 18px;
+  margin-bottom:12px;
+  opacity:0;
+  animation:subirRegra .5s cubic-bezier(.2,.7,.3,1) forwards;
+}
+.regra:nth-child(1){ animation-delay:.05s; }
+.regra:nth-child(2){ animation-delay:.14s; }
+.regra:nth-child(3){ animation-delay:.23s; }
+.regra:nth-child(4){ animation-delay:.32s; }
+
+@keyframes subirRegra{
+  from{ opacity:0; transform:translateY(18px) scale(.97); }
+  to  { opacity:1; transform:none; }
+}
+
+.regra__icone{
+  flex:0 0 62px;
+  display:grid;
+  place-items:center;
+}
+.regra__icone img{ max-height:52px; width:auto; }
+
+.regra__barra{ flex:0 0 2px; align-self:stretch; background:var(--vermelho); border-radius:2px; }
+
+.regra__texto h3{
+  font-size:14.5px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.01em;
+  margin-bottom:4px;
+}
+.regra__texto p{ font-size:13.5px; color:#C4C4C4; line-height:1.4; }
+.regra__texto .vm{ font-weight:700; }
+
+.remate img{ width:32px; height:auto; flex:0 0 auto; }
+.remate{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:22px 0 6px;
+}
+.remate h2{
+  font-size:clamp(20px,6.4vw,25px);
+  font-weight:900;
+  text-transform:uppercase;
+  line-height:1.05;
+}
+
+/* ---------- 12. TELA 3: JOGO ---------- */
+
+.placar{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+  position:relative;
+  z-index:2;
+}
+
+/* o cronômetro e os erros ficam colados no topo ao rolar */
+.placar--fixo{
+  position:sticky;
+  top:0;
+  padding:10px 0 14px;
+  z-index:20;
+}
+/* a faixa que esconde as cartas passando por baixo leva o mesmo padrão de
+   onda do fundo e dissolve na base — sem retângulo preto chapado na tela */
+.placar--fixo::before{
+  content:"";
+  position:absolute;
+  top:-8px; bottom:0; left:-20px; right:-20px;
+  z-index:-1;
+  background:var(--preto) var(--seigaiha) repeat;
+  background-size:60px 60px;
+  -webkit-mask-image:linear-gradient(180deg,#000 76%,transparent);
+          mask-image:linear-gradient(180deg,#000 76%,transparent);
+}
+
+.caixa{
+  background:rgba(18,18,18,.96);
+  border:1px solid #262626;
+  border-radius:18px;
+  padding:12px 10px 14px;
+  text-align:center;
+  position:relative;
+}
+.caixa__rotulo{
+  white-space:nowrap;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.14em;
+  color:#EDEDED;
+  margin-bottom:8px;
+}
+.caixa__rotulo::before,
+.caixa__rotulo::after{
+  content:"";
+  width:22px; height:2px;
+  background:var(--vermelho);
+  border-radius:2px;
+}
+
+.crono{
+  position:relative;
+  display:grid;
+  place-items:center;
+  height:52px;
+}
+.crono__pincel{
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:104%; height:112%;
+  max-width:none;
+  object-fit:contain;
+  pointer-events:none;
+}
+.crono__valor{
+  position:relative;
+  font-size:34px;
+  font-weight:900;
+  letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 2px 10px rgba(0,0,0,.8);
+}
+.crono.correndo .crono__valor{ animation:bater 1s ease-in-out infinite; }
+@keyframes bater{
+  0%,100%{ transform:scale(1); }
+  8%     { transform:scale(1.045); }
+  18%    { transform:scale(1); }
+}
+/* últimos segundos da melhor faixa: fica vermelho e acelera */
+.crono.urgente .crono__valor{ color:var(--vermelho-vivo); }
+
+.crono__icone{
+  position:absolute;
+  top:-34px; left:50%;
+  transform:translateX(-50%);
+  width:44px;
+  z-index:3;
+}
+
+.erros{ display:flex; justify-content:center; gap:14px; height:52px; align-items:center; }
+.erro-bola{
+  width:38px; height:38px;
+  border-radius:50%;
+  border:2.5px solid var(--vermelho);
+  background:transparent;
+  transition:background .3s ease, box-shadow .3s ease, transform .3s ease;
+}
+.erro-bola.aceso{
+  background:var(--vermelho);
+  box-shadow:0 0 18px rgba(255,26,26,.75);
+  animation:estourar .42s cubic-bezier(.2,1.5,.4,1);
+}
+@keyframes estourar{
+  0%  { transform:scale(.4); }
+  55% { transform:scale(1.35); }
+  100%{ transform:scale(1); }
+}
+
+.instrucao{
+  text-align:center;
+  margin:16px 0 14px;
+  position:relative;
+  z-index:2;
+}
+.instrucao h2{ font-size:20px; font-weight:800; }
+.instrucao p{ font-size:14.5px; color:#D0D0D0; margin-top:2px; }
+
+/* --- tabuleiro --- */
+
+.tabuleiro{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);   /* 3 colunas x 4 linhas, como no layout */
+  gap:10px;
+  position:relative;
+  z-index:2;
+  perspective:1100px;
+}
+.tabuleiro.travado{ pointer-events:none; }
+
+.carta{
+  position:relative;
+  aspect-ratio:1;
+  border-radius:var(--raio-carta);
+  transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.3,.9,.35,1);
+  cursor:pointer;
+  /* Entrada escalonada; o índice vem do JS.
+     O preenchimento é "backwards", NUNCA "forwards": com forwards a animação
+     continua mandando em transform depois de terminar e engole o
+     rotateY(180deg) da virada — a carta some do jogo sem nunca virar.
+     Com backwards, o estado inicial vale só durante o atraso e, ao acabar,
+     o transform volta para o CSS normal. */
+  animation:entrarCarta .42s cubic-bezier(.2,.8,.3,1) backwards;
+  animation-delay:calc(var(--i,0) * 55ms);
+  min-height:44px;   /* área de toque mínima */
+}
+@keyframes entrarCarta{
+  from{ opacity:0; transform:translateY(22px) rotateY(-24deg) scale(.9); }
+  to  { opacity:1; transform:none; }
+}
+
+.carta.virada{ transform:rotateY(180deg); }
+
+.carta__face{
+  position:absolute;
+  inset:0;
+  border-radius:var(--raio-carta);
+  overflow:hidden;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+/* verso: a arte de carta do layout aprovado */
+.carta__verso{
+  background:#0C0C0C center/cover no-repeat;
+  border:1.5px solid rgba(211,3,3,.85);
+  box-shadow:inset 0 0 26px rgba(0,0,0,.85), 0 4px 14px rgba(0,0,0,.5);
+}
+.carta__verso img{ width:100%; height:100%; object-fit:cover; }
+
+/* frente: foto do produto + nome da peça */
+.carta__frente{
+  transform:rotateY(180deg);
+  background:#111;
+  border:1.5px solid rgba(212,175,55,.5);
+}
+.carta__frente img{ width:100%; height:100%; object-fit:cover; }
+
+.carta__nome{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  padding:14px 5px 5px;
+  background:linear-gradient(to top, rgba(0,0,0,.94) 42%, transparent);
+  font-size:9.5px;
+  font-weight:700;
+  line-height:1.15;
+  text-align:center;
+  letter-spacing:.01em;
+  text-transform:uppercase;
+}
+
+/* carta pressionada */
+.carta:not(.virada):not(.travada):active{ transform:scale(.955); }
+
+/* par encontrado */
+.carta.certa{ animation:parCerto .6s cubic-bezier(.2,1.3,.4,1); }
+.carta.certa .carta__frente{
+  border-color:var(--dourado);
+  box-shadow:0 0 0 2px rgba(212,175,55,.55), 0 0 26px rgba(212,175,55,.45);
+}
+@keyframes parCerto{
+  0%  { transform:rotateY(180deg) scale(1); }
+  40% { transform:rotateY(180deg) scale(1.12); }
+  100%{ transform:rotateY(180deg) scale(1); }
+}
+.carta.resolvida{ transform:rotateY(180deg); }
+.carta.resolvida .carta__frente{ filter:saturate(1.05); }
+
+/* par errado */
+.carta.errada{ animation:parErrado .5s ease; }
+.carta.errada .carta__frente{ box-shadow:0 0 0 2px var(--vermelho-vivo), 0 0 24px rgba(255,26,26,.55); }
+@keyframes parErrado{
+  0%,100%{ transform:rotateY(180deg) translateX(0); }
+  25%    { transform:rotateY(180deg) translateX(-7px); }
+  55%    { transform:rotateY(180deg) translateX(6px); }
+  80%    { transform:rotateY(180deg) translateX(-3px); }
+}
+
+/* piscada vermelha na tela inteira ao errar */
+.flash-erro{
+  position:fixed; inset:0;
+  background:radial-gradient(circle at 50% 50%, transparent 42%, rgba(211,3,3,.42));
+  pointer-events:none;
+  z-index:60;
+  animation:piscarErro .45s ease-out forwards;
+}
+@keyframes piscarErro{
+  from{ opacity:1; }
+  to  { opacity:0; }
+}
+
+/* ---------- 13. TELA 4: PRÊMIO ---------- */
+
+.selo{
+  display:inline-block;
+  margin:0 auto 10px;
+  padding:7px 18px;
+  border-radius:100px;
+  background:linear-gradient(90deg,var(--dourado),#F2D877,var(--dourado));
+  color:#231C00;
+  font-size:11.5px;
+  font-weight:900;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  animation:brotar .5s cubic-bezier(.2,1.5,.4,1) both;
+}
+@keyframes brotar{
+  from{ opacity:0; transform:scale(.5); }
+  to  { opacity:1; transform:scale(1); }
+}
+
+.premio-nome{
+  text-align:center;
+  font-size:clamp(30px,9.5vw,42px);
+  font-weight:900;
+  line-height:1.03;
+  text-transform:uppercase;
+  color:var(--dourado);
+  text-shadow:0 0 34px rgba(212,175,55,.4);
+  margin:6px 0 4px;
+  animation:brotar .55s .1s cubic-bezier(.2,1.4,.4,1) both;
+}
+
+.medidor{
+  display:flex;
+  justify-content:center;
+  gap:7px;
+  margin:16px 0 6px;
+}
+.medidor__passo{
+  width:34px; height:6px;
+  border-radius:4px;
+  background:#2C2C2C;
+  transition:background .35s ease, box-shadow .35s ease;
+}
+.medidor__passo.ativo{
+  background:linear-gradient(90deg,var(--vermelho),var(--dourado));
+  box-shadow:0 0 12px rgba(212,175,55,.55);
+}
+
+/* --- cupom --- */
+
+.cupom{
+  position:relative;
+  margin:20px 0 6px;
+  background:
+    linear-gradient(180deg,#1A1A1A,#101010);
+  border:1.5px dashed rgba(212,175,55,.55);
+  border-radius:16px;
+  padding:18px 16px 16px;
+  text-align:center;
+  overflow:hidden;
+  animation:carimbar .6s .25s cubic-bezier(.2,1.4,.35,1) both;
+}
+@keyframes carimbar{
+  0%  { opacity:0; transform:scale(1.4) rotate(-6deg); filter:blur(3px); }
+  60% { opacity:1; transform:scale(.96) rotate(1deg);  filter:blur(0); }
+  100%{ opacity:1; transform:none; }
+}
+/* picote nas laterais, como num cupom de papel */
+.cupom::before,
+.cupom::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  width:22px; height:22px;
+  background:var(--preto);
+  border-radius:50%;
+  transform:translateY(-50%);
+}
+.cupom::before{ left:-13px; }
+.cupom::after { right:-13px; }
+
+.cupom__rotulo{
+  font-size:10.5px;
+  font-weight:800;
+  letter-spacing:.22em;
+  color:var(--cinza);
+  text-transform:uppercase;
+}
+.cupom__codigo{
+  font-size:clamp(18px,5.9vw,26px);
+  font-weight:900;
+  letter-spacing:.02em;
+  color:var(--branco);
+  margin:8px 0 10px;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.cupom__linha{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:12.5px;
+  padding-top:10px;
+  border-top:1px solid #262626;
+  color:var(--cinza);
+}
+.cupom__linha b{ color:var(--branco); font-weight:700; }
+
+.copiar{
+  margin-top:10px;
+  font-size:12px;
+  font-weight:700;
+  color:var(--dourado);
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  padding:8px 14px;
+  border:1px solid rgba(212,175,55,.4);
+  border-radius:8px;
+  transition:background .2s ease;
+}
+.copiar:active{ background:rgba(212,175,55,.14); }
+
+.aviso{
+  text-align:center;
+  font-size:12.5px;
+  color:var(--cinza-fraco);
+  margin-top:14px;
+  line-height:1.5;
+}
+
+/* confete de sushi na vitória */
+.confete{
+  position:fixed;
+  top:-40px;
+  font-size:22px;
+  pointer-events:none;
+  z-index:70;
+  animation:cair linear forwards;
+}
+@keyframes cair{
+  0%  { transform:translateY(-40px) rotate(0deg);    opacity:1; }
+  100%{ transform:translateY(105vh) rotate(540deg);  opacity:0; }
+}
+
+/* ---------- 14. TELA 5: BLOQUEADO ---------- */
+
+/* cartas espalhadas ao fundo, como no layout */
+.cartas-fundo{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+}
+.cartas-fundo img{
+  position:absolute;
+  width:92px;
+  border-radius:10px;
+  opacity:.20;
+  filter:brightness(.75);
+  animation:flutuar 7s ease-in-out infinite;
+}
+
+@keyframes flutuar{
+  0%,100%{ transform:translateY(0)     rotate(var(--r,0deg)); }
+  50%    { transform:translateY(-11px) rotate(calc(var(--r,0deg) + 2.5deg)); }
+}
+
+.ampulheta{
+  width:104px;
+  margin:0 auto 14px;
+  animation:virarAmpulheta 4s ease-in-out infinite;
+}
+@keyframes virarAmpulheta{
+  0%,44%  { transform:rotate(0deg); }
+  56%,100%{ transform:rotate(180deg); }
+}
+
+.regressivo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  margin:12px 0 6px;
+  padding:14px 16px;
+  border:2px solid var(--vermelho);
+  border-radius:16px;
+  background:rgba(8,8,8,.92);
+  box-shadow:0 0 26px rgba(211,3,3,.42), inset 0 0 26px rgba(211,3,3,.12);
+  animation:respirarBorda 2.6s ease-in-out infinite;
+}
+@keyframes respirarBorda{
+  0%,100%{ box-shadow:0 0 22px rgba(211,3,3,.34), inset 0 0 22px rgba(211,3,3,.10); }
+  50%    { box-shadow:0 0 40px rgba(211,3,3,.60), inset 0 0 30px rgba(211,3,3,.18); }
+}
+.regressivo img{ width:52px; height:auto; flex:0 0 auto; }
+.regressivo__valor{
+  font-size:clamp(34px,11vw,48px);
+  font-weight:900;
+  letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;
+}
+
+.rotulo-forte{
+  text-align:center;
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-top:18px;
+}
+
+/* ---------- 15. TELA 6: FRANQUEADO ---------- */
+
+.faixa-topo{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  align-self:center;
+  padding:7px 16px;
+  border-radius:100px;
+  border:1px solid rgba(211,3,3,.5);
+  background:rgba(211,3,3,.12);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#FF6B6B;
+  margin-bottom:20px;
+}
+
+.combo{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  padding:14px 4px;
+  border-bottom:1px solid #202020;
+  opacity:0;
+  animation:subirRegra .5s cubic-bezier(.2,.7,.3,1) forwards;
+}
+.combo:last-child{ border-bottom:none; }
+.combo:nth-child(1){ animation-delay:.06s; }
+.combo:nth-child(2){ animation-delay:.15s; }
+.combo:nth-child(3){ animation-delay:.24s; }
+.combo:nth-child(4){ animation-delay:.33s; }
+
+.combo__icone{
+  flex:0 0 44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  font-size:21px;
+  border-radius:12px;
+  background:rgba(211,3,3,.14);
+  border:1px solid rgba(211,3,3,.34);
+}
+.combo__texto h3{ font-size:14.5px; font-weight:800; margin-bottom:2px; }
+.combo__texto p{ font-size:13px; color:#B0B0B0; line-height:1.4; }
+
+.preco{
+  text-align:center;
+  margin:18px 0 4px;
+}
+.preco__valor{
+  font-size:52px;
+  font-weight:900;
+  line-height:1;
+  color:var(--dourado);
+}
+.preco__valor small{ font-size:22px; font-weight:800; }
+.preco__nota{ font-size:13px; color:var(--cinza); margin-top:6px; }
+
+.par-botoes{ display:grid; gap:10px; margin-top:20px; }
+
+/* ---------- 16. TELA: LOJA ---------- */
+
+.lista-lojas{
+  max-height:min(52vh,420px);
+  overflow-y:auto;
+  margin-top:14px;
+  border:1px solid var(--borda);
+  border-radius:14px;
+  background:rgba(0,0,0,.4);
+  -webkit-overflow-scrolling:touch;
+}
+.lista-lojas__item{
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:15px 18px;
+  font-size:15px;
+  font-weight:600;
+  border-bottom:1px solid #1C1C1C;
+  transition:background .15s ease, padding-left .15s ease;
+}
+.lista-lojas__item:last-child{ border-bottom:none; }
+.lista-lojas__item:hover,
+.lista-lojas__item:focus-visible{ background:rgba(211,3,3,.16); padding-left:24px; outline:none; }
+.lista-lojas__item.selecionada{ background:rgba(211,3,3,.26); color:#fff; }
+
+/* ---------- 17. AUXILIARES ---------- */
+
+.centro{ text-align:center; }
+.mt-4{ margin-top:4px; }  .mt-8{ margin-top:8px; }
+.mt-12{ margin-top:12px; } .mt-16{ margin-top:16px; }
+.mt-20{ margin-top:20px; } .mt-28{ margin-top:28px; }
+.mb-8{ margin-bottom:8px; } .mb-16{ margin-bottom:16px; }
+.oculto{ display:none !important; }
+.crescer{ flex:1 1 auto; }
+
+/* leitor de tela apenas */
+.so-leitor{
+  position:absolute; width:1px; height:1px;
+  padding:0; margin:-1px; overflow:hidden;
+  clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+/* mensagem curta que sobe do rodapé (substitui o alert) */
+.aviso-flutuante{
+  position:fixed;
+  left:50%;
+  bottom:26px;
+  transform:translateX(-50%) translateY(24px);
+  z-index:90;
+  padding:13px 22px;
+  border-radius:100px;
+  background:rgba(20,20,20,.97);
+  border:1px solid var(--borda);
+  box-shadow:0 12px 34px rgba(0,0,0,.65);
+  font-size:14px;
+  font-weight:600;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+  max-width:88vw;
+  text-align:center;
+}
+.aviso-flutuante.visivel{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ---------- 18. TELAS MUITO ESTREITAS (360px e abaixo) ---------- */
+
+@media (max-width:360px){
+  .tela{ padding:0 14px 32px; }
+  .tabuleiro{ gap:8px; }
+  .carta__nome{ font-size:8.5px; padding:12px 3px 4px; }
+  .crono__valor{ font-size:29px; }
+  .erro-bola{ width:33px; height:33px; }
+  .regra{ gap:12px; padding:14px 14px; }
+  .regra__icone{ flex-basis:52px; }
+  .regra__icone img{ max-height:44px; }
+  .botao{ font-size:17px; min-height:54px; }
+}
+
+/* ---------- 19. TELAS GRANDES ---------- */
+
+@media (min-width:520px){
+  body{ padding:0; }
+  .tela{ box-shadow:0 0 90px rgba(0,0,0,.9); }
+}
+
+/* ---------- 20. QUEM PEDIU MENOS MOVIMENTO, RECEBE MENOS ---------- */
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+  .carta{ transition:transform .2s ease !important; }
+}
