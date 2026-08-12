@@ -368,13 +368,14 @@
     }).concat(Jogo.verso ? [Jogo.verso] : VERSOS);
 
     const botao = $("#btn-comecar");
-    const textoOriginal = botao.innerHTML;
     botao.disabled = true;
-    botao.innerHTML = "PREPARANDO...";
+
+    // só avisa se a conexão estiver lenta; no 4G normal nem chega a aparecer
+    const avisoLento = setTimeout(function () { avisar("Preparando as cartas..."); }, 600);
 
     precarregar(aBaixar, function () {
+      clearTimeout(avisoLento);
       botao.disabled = false;
-      botao.innerHTML = textoOriginal;
 
       Jogo.viradas = [];
       Jogo.paresFeitos = 0;

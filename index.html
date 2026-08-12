@@ -15,11 +15,11 @@
 </head>
 <body>
 
-<!-- ============================================================
+<!-- =================================================================
      TELA 0 — ESCOLHA DA UNIDADE
-     Só aparece quando o link vem sem ?loja=. Cada unidade tem o
-     link dela pronto no painel: index.html?loja=camboriu
-     ============================================================ -->
+     Não veio no layout; feita com os elementos da marca.
+     Só aparece quando o link vem sem ?loja=.
+     ================================================================= -->
 <main class="tela" id="tela-loja">
   <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
   <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
@@ -44,180 +44,74 @@
 </main>
 
 
-<!-- ============================================================
-     TELA 1 — NOME (capa)
-     ============================================================ -->
-<main class="tela" id="tela-nome">
-  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+<!-- =================================================================
+     TELA 1 — CAPA / NOME
+     A arte aprovada é o próprio fundo. Só o campo de texto e o botão
+     ficam por cima, encaixados nas medidas exatas do layout.
+     ================================================================= -->
+<main class="tela tela--arte" id="tela-nome">
+  <div class="arte arte--capa">
+    <img class="arte__fundo" src="assets/img/telas/capa.jpg"
+         alt="Casa do Sushi — Jogue e ganhe. Preencha seu nome, jogue e ganhe um cupom de desconto." />
 
-  <header class="marca">
-    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
-  </header>
+    <label class="so-leitor" for="campo-nome">Seu nome</label>
+    <input class="arte__campo" id="campo-nome" type="text" placeholder="Digite seu nome"
+           autocomplete="given-name" maxlength="28" enterkeyhint="go" />
 
-  <div class="conteudo">
-    <h1 class="titulo mt-16">
-      JOGUE<br />
-      <span>E <span class="circulado vm">GANHE!</span></span>
-    </h1>
-
-    <p class="chamada">
-      Sua sorte pode deixar o próximo<br />sushi <span class="vm">ainda melhor.</span>
-    </p>
-    <p class="chamada mt-12">
-      <strong>Preencha seu nome, jogue e<br />ganhe um <span class="vm">cupom de desconto!</span></strong>
-    </p>
-
-    <div class="cartao mt-20">
-      <img class="torii" src="assets/img/deco/torii.png" alt="" aria-hidden="true" />
-
-      <h2 class="pergunta" id="pergunta-nome">Qual é o seu nome?</h2>
-
-      <label class="so-leitor" for="campo-nome">Seu nome</label>
-      <input class="campo" id="campo-nome" type="text" placeholder="Digite seu nome"
-             autocomplete="given-name" maxlength="28" enterkeyhint="go" />
-
-      <button class="botao mt-16" id="btn-jogar">
-        JOGAR AGORA <span class="botao__seta" aria-hidden="true">&rsaquo;</span>
-      </button>
-
-      <p class="rodape-cartao">Preparado(a) para <strong>descobrir seu prêmio?</strong></p>
-
-      <div class="presente">
-        <img src="assets/img/deco/ic-gift2.png" alt="" aria-hidden="true" />
-        <span>É rápido, é fácil e você já<br />sai com <span class="vm"><strong>seu desconto</strong></span>.</span>
-      </div>
-
-      <p class="aviso" id="rodape-loja"></p>
-    </div>
+    <button class="arte__toque arte__toque--capa" id="btn-jogar" aria-label="Jogar agora"></button>
   </div>
 
-  <div class="rodape-foto"><img src="assets/img/deco/food-capa.jpg" alt="" aria-hidden="true" /></div>
+  <p class="faixa-loja" id="rodape-loja"></p>
 </main>
 
 
-<!-- ============================================================
+<!-- =================================================================
      TELA 2 — COMO JOGAR
-     ============================================================ -->
-<main class="tela" id="tela-regras">
-  <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
-  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
-
-  <header class="marca">
-    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
-  </header>
-
-  <div class="conteudo">
-    <h1 class="titulo titulo--menor mt-16">COMO<br /><span class="vm">JOGAR?</span></h1>
-
-    <p class="chamada">
-      Encontre os pares de sushi no<br />
-      <span class="vm"><strong>menor tempo</strong></span> possível.<br />
-      Quanto menor o tempo,<br />
-      <span class="vm"><strong>melhor o seu prêmio!</strong></span> 🍣
-    </p>
-
-    <section class="mt-20" aria-label="Regras do jogo">
-      <article class="regra">
-        <div class="regra__icone"><img src="assets/img/deco/ic-cards.png" alt="" /></div>
-        <div class="regra__barra" aria-hidden="true"></div>
-        <div class="regra__texto">
-          <h3>1. Encontre os pares</h3>
-          <p>Vire as cartas e encontre os sushis iguais.</p>
-        </div>
-      </article>
-
-      <article class="regra">
-        <div class="regra__icone"><img src="assets/img/deco/ic-timer.png" alt="" /></div>
-        <div class="regra__barra" aria-hidden="true"></div>
-        <div class="regra__texto">
-          <h3>2. Seja rápido</h3>
-          <p>Complete o jogo no menor tempo possível.<br />
-             <span class="vm">Quanto menor o tempo, melhor o prêmio!</span></p>
-        </div>
-      </article>
-
-      <article class="regra">
-        <div class="regra__icone"><img src="assets/img/deco/ic-x.png" alt="" /></div>
-        <div class="regra__barra" aria-hidden="true"></div>
-        <div class="regra__texto">
-          <h3>3. Cuidado com os erros</h3>
-          <p>Errou <span class="vm">3 vezes seguidas?</span> Sua rodada termina e você poderá tentar novamente <span class="vm">amanhã.</span></p>
-        </div>
-      </article>
-
-      <article class="regra">
-        <div class="regra__icone"><img src="assets/img/deco/ic-gift2.png" alt="" /></div>
-        <div class="regra__barra" aria-hidden="true"></div>
-        <div class="regra__texto">
-          <h3>4. Desbloqueou o prêmio?</h3>
-          <p>Envie a mensagem para a loja e utilize seu prêmio em até <span class="vm">30 dias.</span></p>
-        </div>
-      </article>
-    </section>
-
-    <div class="remate">
-      <img src="assets/img/deco/ic-bolt.png" alt="" aria-hidden="true" />
-      <h2>Quanto menor o tempo,<br /><span class="vm">melhor o prêmio.</span> ⚡🍣</h2>
-    </div>
-
-    <p class="chamada">Memória afiada? Então bora jogar!</p>
-
-    <button class="botao mt-16" id="btn-comecar">
-      COMEÇAR O JOGO <span class="botao__seta" aria-hidden="true">&rsaquo;</span>
-    </button>
+     Arte inteira; por cima, apenas a área de toque do botão.
+     ================================================================= -->
+<main class="tela tela--arte" id="tela-regras">
+  <div class="arte arte--regras">
+    <img class="arte__fundo" src="assets/img/telas/regras.jpg"
+         alt="Como jogar: encontre os pares no menor tempo possível. Errou 3 vezes seguidas, volte amanhã. Prêmio válido por 30 dias." />
+    <button class="arte__toque arte__toque--regras" id="btn-comecar" aria-label="Começar o jogo"></button>
   </div>
-
-  <div class="rodape-foto"><img src="assets/img/deco/food-regras.jpg" alt="" aria-hidden="true" /></div>
 </main>
 
 
-<!-- ============================================================
+<!-- =================================================================
      TELA 3 — TABULEIRO
-     ============================================================ -->
-<main class="tela" id="tela-jogo">
-  <img class="deco deco--folhas-b" src="assets/img/deco/leaves-jogo.png" alt="" aria-hidden="true" />
-  <img class="deco deco--pincel" src="assets/img/deco/brush-jogo.png" alt="" aria-hidden="true" />
+     Topo e rodapé saem da arte aprovada. No meio entram as cartas de
+     verdade, na mesma grade do layout. O cronômetro e as bolinhas de
+     erro ficam encaixados exatamente onde estavam no desenho.
+     ================================================================= -->
+<main class="tela tela--arte" id="tela-jogo">
+  <div class="arte arte--jogo-topo">
+    <img class="arte__fundo" src="assets/img/telas/jogo-topo.jpg"
+         alt="Seu tempo e erros. Encontre todos os pares! Quanto menor o tempo, melhor o prêmio." />
 
-  <header class="marca">
-    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
-  </header>
-
-  <div class="conteudo">
-    <div class="placar placar--fixo">
-      <div class="caixa">
-        <img class="crono__icone" src="assets/img/deco/ic-stopwatch.png" alt="" aria-hidden="true" />
-        <div class="caixa__rotulo">SEU TEMPO</div>
-        <div class="crono" id="crono">
-          <img class="crono__pincel" src="assets/img/deco/timer-brush.png" alt="" aria-hidden="true" />
-          <span class="crono__valor" id="crono-valor" role="timer" aria-live="off">00:00</span>
-        </div>
-      </div>
-
-      <div class="caixa">
-        <div class="caixa__rotulo">ERROS</div>
-        <div class="erros" id="erros" aria-label="Erros consecutivos">
-          <span class="erro-bola"></span>
-          <span class="erro-bola"></span>
-          <span class="erro-bola"></span>
-        </div>
-      </div>
+    <div class="crono" id="crono">
+      <span class="crono__valor" id="crono-valor" role="timer" aria-live="off">00:00</span>
     </div>
 
-    <div class="instrucao">
-      <h2>Encontre todos os pares! 🍣</h2>
-      <p>Quanto <span class="vm">menor o tempo, melhor o prêmio.</span></p>
+    <div class="erros" id="erros" aria-label="Erros consecutivos">
+      <span class="erro-bola"></span>
+      <span class="erro-bola"></span>
+      <span class="erro-bola"></span>
     </div>
-
-    <div class="tabuleiro" id="tabuleiro" aria-label="Tabuleiro do jogo da memória"></div>
   </div>
 
-  <div class="rodape-foto"><img src="assets/img/deco/food-jogo.jpg" alt="" aria-hidden="true" /></div>
+  <div class="tabuleiro" id="tabuleiro" aria-label="Tabuleiro do jogo da memória"></div>
+
+  <div class="arte arte--jogo-base">
+    <img class="arte__fundo" src="assets/img/telas/jogo-base.jpg" alt="" aria-hidden="true" />
+  </div>
 </main>
 
 
-<!-- ============================================================
+<!-- =================================================================
      TELA 4 — PRÊMIO
-     ============================================================ -->
+     Não veio no layout; feita com os elementos da marca.
+     ================================================================= -->
 <main class="tela" id="tela-premio">
   <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
   <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
@@ -244,9 +138,9 @@
 
       <div class="cupom">
         <div class="cupom__rotulo">Cupom Casa do Sushi</div>
-        <div class="cupom__codigo" id="cupom-codigo">SA-XXX-N0-0000</div>
+        <div class="cupom__codigo" id="cupom-codigo">TEMAKIJOGO</div>
         <div class="cupom__linha">
-          <span>Pedido mínimo</span><b id="cupom-minimo">R$ 50,00</b>
+          <span>Pedido mínimo</span><b id="cupom-minimo">R$ 110,00</b>
         </div>
         <div class="cupom__linha">
           <span>Válido até</span><b id="cupom-validade">--/--/----</b>
@@ -276,61 +170,28 @@
 </main>
 
 
-<!-- ============================================================
-     TELA 5 — TENTATIVAS ESGOTADAS (bloqueio de 24h)
-     ============================================================ -->
-<main class="tela" id="tela-bloqueado">
-  <div class="cartas-fundo" id="cartas-fundo" aria-hidden="true"></div>
-  <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
-  <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
+<!-- =================================================================
+     TELA 5 — TENTATIVAS ESGOTADAS
+     Arte inteira. Por cima: o regressivo vivo e a área de toque do
+     botão "Voltar ao início".
+     ================================================================= -->
+<main class="tela tela--arte" id="tela-bloqueado">
+  <div class="arte arte--bloqueado">
+    <img class="arte__fundo" src="assets/img/telas/bloqueado.jpg"
+         alt="Ops! Você errou 3 vezes seguidas. Suas tentativas de hoje acabaram, volte em 24h." />
 
-  <header class="marca">
-    <img src="assets/img/marca.png" alt="Casa do Sushi — o sushi que faz história" />
-  </header>
+    <span class="regressivo__valor" id="regressivo" role="timer" aria-live="off">23:59:59</span>
 
-  <div class="conteudo">
-    <div class="centro mt-12">
-      <img src="assets/img/deco/ops-marcas.png" alt="" aria-hidden="true"
-           style="width:64px;margin:0 auto -6px;" />
-    </div>
-    <h1 class="titulo">OPS! 🍣</h1>
-    <p class="chamada">Você errou <span class="vm"><strong>3 vezes</strong></span> seguidas.</p>
-
-    <div class="cartao mt-16">
-      <img class="ampulheta" src="assets/img/deco/ic-ampulheta.png" alt="" aria-hidden="true" />
-      <h2 class="titulo titulo--menor" style="font-size:clamp(26px,8vw,34px)">
-        SUAS TENTATIVAS<br /><span class="vm">DE HOJE ACABARAM</span>
-      </h2>
-      <p class="chamada">Mas <span class="vm"><strong>amanhã</strong></span> tem mais!</p>
-      <p class="chamada mt-8" style="font-size:14px">
-        Volte em 24h para jogar novamente<br />e tentar desbloquear seu prêmio.
-      </p>
-    </div>
-
-    <p class="rotulo-forte">Próxima tentativa em</p>
-
-    <div class="regressivo">
-      <img src="assets/img/deco/ic-crono-vermelho.png" alt="" aria-hidden="true" />
-      <span class="regressivo__valor" id="regressivo" role="timer" aria-live="off">23:59:59</span>
-    </div>
-
-    <p class="chamada mt-16">
-      Treine a memória porque<br />os sushis te esperam <span class="vm"><strong>amanhã.</strong></span> 🍣
-    </p>
-
-    <button class="botao botao--vazado mt-16" id="btn-voltar-inicio">
-      <span class="botao__seta" aria-hidden="true">&lsaquo;</span> VOLTAR AO INÍCIO
-    </button>
+    <button class="arte__toque arte__toque--bloqueado" id="btn-voltar-inicio" aria-label="Voltar ao início"></button>
   </div>
-
-  <div class="rodape-foto"><img src="assets/img/deco/food-bloq.jpg" alt="" aria-hidden="true" /></div>
 </main>
 
 
-<!-- ============================================================
+<!-- =================================================================
      TELA 6 — OFERTA AO FRANQUEADO
+     Não veio no layout; feita com os elementos da marca.
      Aparece só quando CONFIG.MODO_DEMO_FRANQUEADO = true.
-     ============================================================ -->
+     ================================================================= -->
 <main class="tela" id="tela-franqueado">
   <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
   <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
@@ -376,9 +237,9 @@
 </main>
 
 
-<!-- ============================================================
+<!-- =================================================================
      TELA 7 — CONFIRMAÇÃO DA RESPOSTA DO FRANQUEADO
-     ============================================================ -->
+     ================================================================= -->
 <main class="tela" id="tela-obrigado">
   <img class="deco deco--folhas" src="assets/img/deco/leaves.png" alt="" aria-hidden="true" />
   <img class="deco deco--pincel" src="assets/img/deco/brush-ring.png" alt="" aria-hidden="true" />
@@ -393,7 +254,7 @@
       <h1 class="titulo titulo--menor mt-12" id="obrigado-titulo">RESPOSTA<br /><span class="vm">REGISTRADA!</span></h1>
       <p class="chamada" id="obrigado-texto"></p>
 
-      <a class="botao botao--whats mt-20" id="btn-falar-franqueadora" href="#" target="_blank" rel="noopener">
+      <a class="botao botao--whats mt-20 oculto" id="btn-falar-franqueadora" href="#" target="_blank" rel="noopener">
         FALAR COM A FRANQUEADORA
       </a>
       <button class="botao botao--fantasma mt-12" id="btn-jogar-de-novo">Ver o jogo de novo</button>

@@ -404,85 +404,23 @@ input{ font-family:inherit; }
 
 /* ---------- 12. TELA 3: JOGO ---------- */
 
-.placar{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:12px;
-  position:relative;
-  z-index:2;
-}
-
-/* o cronômetro e os erros ficam colados no topo ao rolar */
-.placar--fixo{
-  position:sticky;
-  top:0;
-  padding:10px 0 14px;
-  z-index:20;
-}
-/* a faixa que esconde as cartas passando por baixo leva o mesmo padrão de
-   onda do fundo e dissolve na base — sem retângulo preto chapado na tela */
-.placar--fixo::before{
-  content:"";
-  position:absolute;
-  top:-8px; bottom:0; left:-20px; right:-20px;
-  z-index:-1;
-  background:var(--preto) var(--seigaiha) repeat;
-  background-size:60px 60px;
-  -webkit-mask-image:linear-gradient(180deg,#000 76%,transparent);
-          mask-image:linear-gradient(180deg,#000 76%,transparent);
-}
-
-.caixa{
-  background:rgba(18,18,18,.96);
-  border:1px solid #262626;
-  border-radius:18px;
-  padding:12px 10px 14px;
-  text-align:center;
-  position:relative;
-}
-.caixa__rotulo{
-  white-space:nowrap;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.14em;
-  color:#EDEDED;
-  margin-bottom:8px;
-}
-.caixa__rotulo::before,
-.caixa__rotulo::after{
-  content:"";
-  width:22px; height:2px;
-  background:var(--vermelho);
-  border-radius:2px;
-}
+/* A caixa "SEU TEMPO", a de "ERROS" e os textos já vêm desenhados na arte
+   aprovada (jogo-topo.jpg). Aqui ficam só os números vivos, encaixados nas
+   coordenadas medidas no próprio layout de 853 px de largura. */
 
 .crono{
-  position:relative;
+  left:12.43%;  top:56.63%;
+  width:33.53%; height:18.22%;
   display:grid;
   place-items:center;
-  height:52px;
-}
-.crono__pincel{
-  position:absolute;
-  top:50%; left:50%;
-  transform:translate(-50%,-50%);
-  width:104%; height:112%;
-  max-width:none;
-  object-fit:contain;
-  pointer-events:none;
 }
 .crono__valor{
-  position:relative;
-  font-size:34px;
+  font-size:10.55cqw;          /* 90px no layout de 853 */
   font-weight:900;
-  letter-spacing:.01em;
+  line-height:1;
+  letter-spacing:.005em;
   font-variant-numeric:tabular-nums;
-  text-shadow:0 2px 10px rgba(0,0,0,.8);
+  text-shadow:0 0.25cqw 1.2cqw rgba(0,0,0,.85);
 }
 .crono.correndo .crono__valor{ animation:bater 1s ease-in-out infinite; }
 @keyframes bater{
@@ -493,19 +431,18 @@ input{ font-family:inherit; }
 /* últimos segundos da melhor faixa: fica vermelho e acelera */
 .crono.urgente .crono__valor{ color:var(--vermelho-vivo); }
 
-.crono__icone{
-  position:absolute;
-  top:-34px; left:50%;
-  transform:translateX(-50%);
-  width:44px;
-  z-index:3;
+/* os três círculos vazios já estão na arte; estes ficam exatamente em cima
+   e só acendem quando o jogador erra */
+.erros{
+  left:59.09%; top:61.98%;
+  width:25.79%; height:10.10%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-
-.erros{ display:flex; justify-content:center; gap:14px; height:52px; align-items:center; }
 .erro-bola{
-  width:38px; height:38px;
+  width:5.98cqw; height:5.98cqw;   /* 51px no layout de 853 */
   border-radius:50%;
-  border:2.5px solid var(--vermelho);
   background:transparent;
   transition:background .3s ease, box-shadow .3s ease, transform .3s ease;
 }
@@ -520,31 +457,29 @@ input{ font-family:inherit; }
   100%{ transform:scale(1); }
 }
 
-.instrucao{
-  text-align:center;
-  margin:16px 0 14px;
-  position:relative;
-  z-index:2;
-}
-.instrucao h2{ font-size:20px; font-weight:800; }
-.instrucao p{ font-size:14.5px; color:#D0D0D0; margin-top:2px; }
-
-/* --- tabuleiro --- */
+/* --- tabuleiro ---
+   Margens, vãos e proporção das cartas medidos no layout aprovado:
+   grade de x=70 a x=778, cartas de 217 x 270, vão de 30 na horizontal
+   e 13 na vertical, tudo sobre a base de 853 px.                      */
 
 .tabuleiro{
   display:grid;
   grid-template-columns:repeat(3,1fr);   /* 3 colunas x 4 linhas, como no layout */
-  gap:10px;
+  column-gap:3.52cqw;
+  row-gap:1.52cqw;
+  margin:3.99cqw 8.21% 0;
+  width:83.00%;
   position:relative;
   z-index:2;
-  perspective:1100px;
+  perspective:130cqw;
 }
 .tabuleiro.travado{ pointer-events:none; }
 
 .carta{
   position:relative;
-  aspect-ratio:1;
-  border-radius:var(--raio-carta);
+  aspect-ratio:217 / 270;      /* retrato, como no layout — não é quadrada */
+  border-radius:5.5cqw;
+  border-radius:min(5.5cqw, 18px);
   transform-style:preserve-3d;
   transition:transform .55s cubic-bezier(.3,.9,.35,1);
   cursor:pointer;
@@ -593,9 +528,9 @@ input{ font-family:inherit; }
 .carta__nome{
   position:absolute;
   left:0; right:0; bottom:0;
-  padding:14px 5px 5px;
+  padding:4cqw 1.4cqw 1.4cqw;
   background:linear-gradient(to top, rgba(0,0,0,.94) 42%, transparent);
-  font-size:9.5px;
+  font-size:2.45cqw;
   font-weight:700;
   line-height:1.15;
   text-align:center;
@@ -788,72 +723,22 @@ input{ font-family:inherit; }
   100%{ transform:translateY(105vh) rotate(540deg);  opacity:0; }
 }
 
-/* ---------- 14. TELA 5: BLOQUEADO ---------- */
+/* ---------- 14. TELA 5: TENTATIVAS ESGOTADAS ----------
+   A ampulheta, as cartas espalhadas, a caixa do regressivo e o botão já
+   vêm desenhados na arte aprovada. Sobra o número, encaixado no lugar
+   exato onde estava o "23:59:59" do layout.                            */
 
-/* cartas espalhadas ao fundo, como no layout */
-.cartas-fundo{
-  position:absolute;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  overflow:hidden;
-}
-.cartas-fundo img{
-  position:absolute;
-  width:92px;
-  border-radius:10px;
-  opacity:.20;
-  filter:brightness(.75);
-  animation:flutuar 7s ease-in-out infinite;
-}
-
-@keyframes flutuar{
-  0%,100%{ transform:translateY(0)     rotate(var(--r,0deg)); }
-  50%    { transform:translateY(-11px) rotate(calc(var(--r,0deg) + 2.5deg)); }
-}
-
-.ampulheta{
-  width:104px;
-  margin:0 auto 14px;
-  animation:virarAmpulheta 4s ease-in-out infinite;
-}
-@keyframes virarAmpulheta{
-  0%,44%  { transform:rotate(0deg); }
-  56%,100%{ transform:rotate(180deg); }
-}
-
-.regressivo{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:14px;
-  margin:12px 0 6px;
-  padding:14px 16px;
-  border:2px solid var(--vermelho);
-  border-radius:16px;
-  background:rgba(8,8,8,.92);
-  box-shadow:0 0 26px rgba(211,3,3,.42), inset 0 0 26px rgba(211,3,3,.12);
-  animation:respirarBorda 2.6s ease-in-out infinite;
-}
-@keyframes respirarBorda{
-  0%,100%{ box-shadow:0 0 22px rgba(211,3,3,.34), inset 0 0 22px rgba(211,3,3,.10); }
-  50%    { box-shadow:0 0 40px rgba(211,3,3,.60), inset 0 0 30px rgba(211,3,3,.18); }
-}
-.regressivo img{ width:52px; height:auto; flex:0 0 auto; }
 .regressivo__valor{
-  font-size:clamp(34px,11vw,48px);
+  left:28.84%; top:66.43%;
+  width:56.62%; height:4.45%;
+  display:grid;
+  place-items:center;
+  font-size:12.60cqw;            /* 108px no layout de 853 */
   font-weight:900;
-  letter-spacing:.01em;
+  line-height:1;
+  letter-spacing:.005em;
   font-variant-numeric:tabular-nums;
-}
-
-.rotulo-forte{
-  text-align:center;
-  font-size:15px;
-  font-weight:800;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  margin-top:18px;
+  text-shadow:0 0.25cqw 1.4cqw rgba(0,0,0,.9);
 }
 
 /* ---------- 15. TELA 6: FRANQUEADO ---------- */
@@ -943,6 +828,94 @@ input{ font-family:inherit; }
 .lista-lojas__item:hover,
 .lista-lojas__item:focus-visible{ background:rgba(211,3,3,.16); padding-left:24px; outline:none; }
 .lista-lojas__item.selecionada{ background:rgba(211,3,3,.26); color:#fff; }
+
+/* ---------- 16b. TELAS DESENHADAS (arte aprovada como fundo) ----------
+   Capa, regras, tabuleiro e tentativas esgotadas saíram prontas do layout.
+   Em vez de redesenhar tudo em CSS e ficar perto, a própria arte é o fundo
+   e só o que precisa estar vivo entra por cima: o campo de nome, as áreas
+   de toque dos botões, o cronômetro, as bolinhas de erro e as cartas.
+
+   As medidas em % e cqw vieram do arquivo original de 853 px de largura,
+   então a tela é proporcionalmente idêntica ao desenho em qualquer
+   aparelho. 1cqw = 1% da largura da tela = 8,53 px do layout.          */
+
+.tela--arte{
+  padding:0;
+  min-height:0;
+  overflow:visible;
+  container-type:inline-size;
+}
+.tela--arte.ativa{ display:block; }
+
+.arte{
+  position:relative;
+  width:100%;
+  line-height:0;
+}
+.arte__fundo{
+  width:100%;
+  height:auto;
+  display:block;
+}
+
+/* tudo que não é o fundo se posiciona sobre ele */
+.arte > *:not(.arte__fundo){
+  position:absolute;
+  line-height:normal;
+}
+
+/* --- campo de nome da capa --- */
+
+.arte__campo{
+  left:17.58%;  top:49.84%;
+  width:64.95%; height:5.31%;
+  padding:0 4.69cqw;            /* 40px no layout */
+  background:transparent;
+  border:none;
+  color:var(--branco);
+  font-size:2.93cqw;            /* 25px no layout */
+  font-weight:500;
+  letter-spacing:.01em;
+}
+.arte__campo::placeholder{ color:#6E6E6E; }
+.arte__campo:focus{ outline:none; }
+.arte__campo:focus-visible{
+  outline:0.25cqw solid var(--vermelho);
+  outline-offset:0.4cqw;
+  border-radius:1.4cqw;
+}
+.arte__campo.erro{ animation:tremer .4s; }
+
+/* --- áreas de toque em cima dos botões já desenhados --- */
+
+.arte__toque{
+  background:transparent;
+  border:none;
+  border-radius:1.6cqw;
+  transition:background .12s ease, transform .12s ease;
+}
+.arte__toque:active{ background:rgba(255,255,255,.16); transform:scale(.985); }
+.arte__toque:focus-visible{ outline:0.3cqw solid #fff; outline-offset:0.3cqw; }
+.arte__toque[disabled]{ pointer-events:none; }
+
+.arte__toque--capa      { left:17.47%; top:56.40%; width:65.06%; height:5.80%; }
+.arte__toque--regras    { left:12.15%; top:75.60%; width:79.40%; height:8.20%; }
+.arte__toque--bloqueado { left:19.70%; top:84.20%; width:60.73%; height:8.10%; }
+
+/* --- faixa da unidade, abaixo da arte (não encosta no desenho) --- */
+
+.faixa-loja{
+  max-width:var(--largura);
+  margin:0 auto;
+  padding:10px 16px 22px;
+  text-align:center;
+  font-size:12.5px;
+  font-weight:600;
+  letter-spacing:.02em;
+  color:var(--cinza-fraco);
+  background:var(--preto);
+}
+.faixa-loja:empty{ display:none; }
 
 /* ---------- 17. AUXILIARES ---------- */
 

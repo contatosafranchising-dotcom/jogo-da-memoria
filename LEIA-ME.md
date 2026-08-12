@@ -4,20 +4,23 @@ Landing page de jogo promocional. O cliente joga, completa no menor tempo
 possível e desbloqueia um cupom que resgata pelo WhatsApp da unidade.
 
 HTML + CSS + JavaScript puro. **Sem npm, sem build, sem terminal.**
-Para ver funcionando, dê dois cliques no `index.html`.
+
+**No ar:** https://contatosafranchising-dotcom.github.io/jogo-da-memoria/
 
 ---
 
-## 1. Como testar agora
+## 1. Como testar
 
 | O que | Como |
 |---|---|
-| O jogo, de uma unidade | abra `index.html?loja=camboriu` |
-| A tela de escolha de unidade | abra `index.html` sem nada depois |
-| O painel da franqueadora | abra `painel.html` |
+| O jogo de uma unidade | `.../jogo-da-memoria/?loja=camboriu` |
+| A tela de escolha de unidade | `.../jogo-da-memoria/` sem nada depois |
+| O painel da franqueadora | `.../jogo-da-memoria/painel.html` |
 
-Para forçar a tela de bloqueio sem errar 3 vezes: abra o console do navegador
-(F12) e cole:
+Localmente é a mesma coisa: dois cliques no `index.html`.
+
+Para forçar a tela de tentativas esgotadas sem errar 3 vezes, abra o console
+do navegador (F12) e cole:
 
 ```js
 localStorage.setItem('casadosushi_jogo', JSON.stringify({
@@ -26,11 +29,32 @@ localStorage.setItem('casadosushi_jogo', JSON.stringify({
 location.reload();
 ```
 
-Para zerar tudo e começar do início: `localStorage.clear()` e recarregue.
+Para zerar tudo: `localStorage.clear()` e recarregue.
 
 ---
 
-## 2. Arquivos
+## 2. Como o layout foi montado
+
+As quatro telas que vieram do design (capa, como jogar, tabuleiro e
+tentativas esgotadas) **usam a própria arte aprovada como fundo**. Por cima
+dela entra só o que precisa estar vivo: o campo de nome, as áreas de toque
+dos botões, o cronômetro, as bolinhas de erro, as cartas e o regressivo.
+
+Cada peça foi encaixada nas coordenadas medidas no arquivo original de 853 px
+de largura, em `%` e `cqw`, então a tela fica proporcionalmente idêntica ao
+desenho em qualquer aparelho — de 320 px a tablet.
+
+**O que isso significa na prática:** o texto dessas quatro telas está dentro
+da imagem. Trocar uma palavra de "COMO JOGAR?" ou "JOGUE E GANHE!" exige
+gerar a arte de novo no design e substituir o arquivo em
+`/assets/img/telas/`. Foi a troca escolhida para o layout sair igual ao
+aprovado. As telas de prêmio, oferta ao franqueado e escolha de unidade não
+vieram no design, então são HTML de verdade e dá para editar o texto direto
+no `index.html`.
+
+---
+
+## 3. Arquivos
 
 ```
 index.html                  as 8 telas do jogo, em arquivo único
@@ -42,9 +66,9 @@ assets/
   js/api.js                 gravação e leitura dos números
   js/jogo.js                lógica do jogo
   js/painel.js              lógica do painel
-  img/marca.png             lockup da marca
+  img/telas/                a arte aprovada das 4 telas desenhadas
   img/produtos/             16 fotos, uma por peça, nomeadas
-  img/deco/                 arte recortada do layout aprovado
+  img/deco/                 versos de carta e arte solta da marca
 backend/apps-script.gs      backend opcional (Google Sheets)
 ```
 
@@ -54,10 +78,10 @@ As telas usam os nomes de seção previstos no CLAUDE.md: `#tela-nome`,
 
 ---
 
-## 3. O fluxo
+## 4. O fluxo
 
 ```
-Link da unidade (index.html?loja=camboriu)
+Link da unidade (?loja=camboriu)
   ↓
 Nome  →  Regras  →  Tabuleiro (cronômetro dispara)
   ↓
@@ -68,18 +92,18 @@ Nome  →  Regras  →  Tabuleiro (cronômetro dispara)
 └── Errou 3 vezes SEGUIDAS → bloqueio de 24h com contador regressivo
 ```
 
-- **12 cartas, 6 pares, grade 3 × 4** — como no layout aprovado.
+- **12 cartas, 6 pares, grade 3 × 4** — na mesma posição do layout.
 - A cada partida o jogo **sorteia 6 dos 16 produtos** e embaralha de novo.
   Ninguém decora o tabuleiro.
 - **São 4 desenhos de verso** e o jogo sorteia um a cada rodada, então a mesa
   nunca aparece igual duas vezes seguidas.
 - Erro é **consecutivo**: acertar um par zera o contador.
 - O tabuleiro trava durante a comparação, então não dá para virar 4 cartas.
-- As 6 fotos são pré-carregadas **antes** do cronômetro começar.
+- As fotos são pré-carregadas **antes** do cronômetro começar.
 
 ---
 
-## 4. Mexendo no que importa (`assets/js/config.js`)
+## 5. Mexendo no que importa (`assets/js/config.js`)
 
 ### Ligar/desligar a tela do franqueado
 
@@ -90,56 +114,46 @@ MODO_DEMO_FRANQUEADO: false,  // versão que vai para o cliente final
 
 ### Prêmios
 
-```js
-{ nivel: 5, ateSegundos: 30, nome: "1 Temaki Hot",    minimo: 90 }
-```
+| Nível | Prêmio | Pedido mínimo | Custo aprox. | Custo/mínimo | Até |
+|---|---|---|---|---|---|
+| 5 | 1 Temaki Hot | R$ 110 | R$ 10,00 (CMV) | 9,1% | 30s |
+| 4 | 10 Hot Cortesia | R$ 95 | R$ 10,00 (CMV) | 10,5% | 45s |
+| 3 | 15% de desconto | R$ 80 | R$ 12,00 | 15,0% | 60s |
+| 2 | 10% de desconto | R$ 65 | R$ 6,50 | 10,0% | 90s |
+| 1 | 5% de desconto | R$ 50 | R$ 2,50 | 5,0% | completou |
 
-| Nível | Prêmio | Pedido mínimo | Até |
-|---|---|---|---|
-| 5 | 1 Temaki Hot | R$ 90 | 30s |
-| 4 | 10 Hot Cortesia | R$ 85 | 45s |
-| 3 | 15% de desconto | R$ 80 | 60s |
-| 2 | 10% de desconto | R$ 65 | 90s |
-| 1 | 5% de desconto | R$ 50 | completou |
+A escada sobe nos dois eixos: prêmio melhor exige mínimo maior. E o nível 3
+é o mais caro da tabela em proporção (15% do pedido), enquanto os prêmios em
+produto ficam em ~10% e custam CMV, não faturamento.
 
-> **Duas coisas para resolver antes de publicar.**
+> **Os segundos ainda são chute.** Rode uma semana fechada com a equipe
+> interna e as embaixadoras, colete os tempos reais e corte por percentil
+> (topo 10% = melhor prêmio). Chutar no papel é como essas campanhas acabam
+> com todo mundo no nível máximo no segundo dia — e aí a conta que fecha em
+> 9,1% vira 9,1% de *todos* os pedidos.
 >
-> 1. **O mínimo do nível 4 não veio na tabela.** Coloquei R$ 85 para manter a
->    escada subindo entre os R$ 80 do nível 3 e os R$ 90 do nível 5. Se o
->    número certo for outro, é só trocar no `config.js`.
->
-> 2. **Os segundos são chute.** Rode uma semana fechada com a equipe interna
->    e as embaixadoras, colete os tempos reais e corte por percentil (topo
->    10% = melhor prêmio). Chutar no papel é como essas campanhas acabam com
->    todo mundo no nível máximo no segundo dia.
->
-> Vale também conferir se cada mínimo está **acima do ticket médio do
+> Vale conferir também se cada mínimo está **acima do ticket médio do
 > delivery da unidade**. Se o TM é R$ 75 e o cupom libera a partir de R$ 50,
 > não houve pedido novo — só desconto numa venda que já ia acontecer.
 
 ### Verso das cartas
 
-São 4 desenhos, listados em `VERSOS`: o original do layout aprovado e três
-montados com os mesmos elementos da marca (onda seigaiha, torii, símbolo S.A,
-moldura vermelha ou dourada).
+São 4 desenhos em `VERSOS`: o original do layout e três montados com os
+mesmos elementos da marca (onda seigaiha, torii, símbolo S.A, moldura
+vermelha ou dourada).
 
 ```js
 VERSO_MODO: "sorteado",  // um verso por partida, igual nas 12 cartas
 VERSO_MODO: "misto",     // um verso sorteado para CADA carta
 ```
 
-O padrão é `"sorteado"`: a mesa muda de cara a cada rodada e o jogo continua
-justo. O modo `"misto"` existe, mas vale um aviso — verso diferente em cada
-carta parece dica de par para muita gente, mesmo não sendo. Só use se for
-mesmo essa a intenção.
-
-Para acrescentar um quinto desenho: salve o PNG quadrado em
-`/assets/img/deco/` e acrescente a linha em `VERSOS`.
+O padrão é `"sorteado"`. O modo `"misto"` existe, mas verso diferente em cada
+carta parece dica de par para muita gente, mesmo não sendo.
 
 ### WhatsApp das lojas
 
-As 42 unidades já estão em `LOJAS`, com número, slug e código de cupom.
-Para trocar um número, edite o campo `whats` (só dígitos, sem `+` e sem espaço).
+As 42 unidades estão em `LOJAS`, com número, slug e código. Para trocar um
+número, edite o campo `whats` (só dígitos, sem `+` e sem espaço).
 
 ### WhatsApp da franqueadora
 
@@ -147,25 +161,26 @@ Para trocar um número, edite o campo `whats` (só dígitos, sem `+` e sem espa�
 WHATS_FRANQUEADORA: "",   // vazio = o botão não aparece
 ```
 
-Preencha para que o franqueado que responder "sim" possa falar direto com
-o time. A resposta cai no painel de qualquer jeito.
+Preencha para que o franqueado que responder "sim" fale direto com o time.
+A resposta cai no painel de qualquer jeito.
 
 ---
 
-## 5. O cupom
+## 6. O cupom
 
-Formato padronizado, gerado no fim da partida:
+Um código fixo por prêmio, definido no `config.js`:
 
-```
-SA-CAM-N5-7K2P
-│  │   │  └── 4 caracteres sorteados (sem O, 0, I e 1, que confundem à mão)
-│  │   └───── nível do prêmio
-│  └───────── código da unidade
-└──────────── prefixo da rede
-```
+| Prêmio | Cupom |
+|---|---|
+| 1 Temaki Hot | `TEMAKIJOGO` |
+| 10 Hot Cortesia | `10HOTJOGO` |
+| 15% de desconto | `15OFFJOGO` |
+| 10% de desconto | `10OFFJOGO` |
+| 5% de desconto | `5OFFJOGO` |
 
-O mesmo código aparece na tela, no botão de copiar e dentro da mensagem
-do WhatsApp.
+São cinco códigos no total, então o atendente decora e confere de
+bate-pronto. Como o código se repete, quem valida é a pessoa no WhatsApp:
+a mensagem traz o nome, o tempo, o nível e a unidade antes do resgate.
 
 ### A mensagem que o cliente envia
 
@@ -179,8 +194,8 @@ Joguei o *Jogo da Memória* da Casa do Sushi e desbloqueei um prêmio!
 🏆 Nível: *4 de 5*
 🎁 Prêmio: *10 Hot Cortesia*
 
-🎟️ *CUPOM: SA-CAM-N4-7K2P*
-💰 Pedido mínimo: *R$ 85,00*
+🎟️ *CUPOM: 10HOTJOGO*
+💰 Pedido mínimo: *R$ 95,00*
 📅 Válido até: *11/09/2026*
 📍 Unidade: *S.A Camboriú*
 
@@ -192,10 +207,10 @@ Quero resgatar meu prêmio e fazer meu pedido! 🥢
 Vale deixar pronta no atendimento, para a confirmação sair padronizada:
 
 ```
-Oiê! 🍣 Cupom *SA-CAM-N4-7K2P* confirmado!
+Oiê! 🍣 Cupom *10HOTJOGO* confirmado!
 
 Você garantiu: *10 Hot Cortesia* 🎁
-É só fechar um pedido de *R$ 85,00* ou mais e o brinde vai junto.
+É só fechar um pedido de *R$ 95,00* ou mais e o brinde vai junto.
 Vale até *11/09/2026*.
 
 Me manda seu pedido que eu já lanço aqui. 🥢
@@ -203,40 +218,33 @@ Me manda seu pedido que eu já lanço aqui. 🥢
 
 ---
 
-## 6. Os links das 42 unidades
+## 7. Os links das 42 unidades
 
 Cada loja tem o link dela:
 
 ```
-https://seusite.com/index.html?loja=camboriu
-https://seusite.com/index.html?loja=maringa
+https://contatosafranchising-dotcom.github.io/jogo-da-memoria/?loja=camboriu
+https://contatosafranchising-dotcom.github.io/jogo-da-memoria/?loja=maringa
 ...
 ```
 
-Abra o `painel.html`, cole o endereço final no campo **"Endereço público do
-jogo"** e clique em **"Copiar os 42 links"**. Vem tudo pronto para colar no
-Excel ou mandar no grupo.
+Abra o `painel.html` e clique em **"Copiar os 42 links"**. Vem tudo pronto
+para colar no Excel ou mandar no grupo.
 
 Quem abrir o link sem `?loja=` cai numa tela de escolha de unidade — ninguém
 fica sem saber para onde vai o cupom.
 
 ---
 
-## 7. O painel da franqueadora (`painel.html`)
+## 8. O painel da franqueadora (`painel.html`)
 
-Mostra, por unidade:
-
-- acessos (aberturas do link)
-- partidas começadas
-- partidas concluídas
-- bloqueios por 3 erros
-- cupons enviados (clique no botão do WhatsApp)
-- **a resposta do franqueado** sobre contratar o jogo
-- o link exclusivo, com botão de copiar e de abrir
+Mostra, por unidade: acessos, partidas começadas, partidas concluídas,
+bloqueios por 3 erros, cupons enviados, **a resposta do franqueado** sobre
+contratar o jogo e o link exclusivo com botão de copiar e de abrir.
 
 No topo: totais da rede, taxa de conclusão e quanto entra por mês se todas
 as lojas que disseram "sim" aceitarem. Tem busca, filtro por resposta,
-ordenação e **exportação em CSV** (abre no Excel com os acentos certos).
+ordenação e exportação em CSV.
 
 ### Dois modos
 
@@ -245,35 +253,36 @@ fica no `localStorage`. O jogo funciona inteiro e o painel mostra os números
 **daquele navegador**. Serve para testar e para apresentar na reunião.
 
 **Real.** Preencha o `ENDPOINT` e o painel passa a somar as 42 unidades.
-
-### Ligando o modo real (10 minutos, uma vez só)
-
-O passo a passo está comentado dentro de `backend/apps-script.gs`. Em resumo:
-crie uma planilha no Google Sheets → Extensões > Apps Script → cole o arquivo
-→ Implantar como App da Web ("qualquer pessoa") → copie a URL `/exec` → cole
-em `CONFIG.ENDPOINT`.
-
-É gratuito, não precisa de servidor nem de cartão.
+O passo a passo está comentado dentro de `backend/apps-script.gs`: planilha
+no Google Sheets → Extensões > Apps Script → colar o arquivo → implantar
+como App da Web → copiar a URL `/exec` → colar no `config.js`. É gratuito e
+não precisa de servidor.
 
 ---
 
-## 8. Publicando
+## 9. Publicando alterações
 
-Arraste a pasta para o **Vercel** ou suba num repositório e ligue o
-**GitHub Pages**. Não há build: o que está aqui é o que vai para o ar.
+O site está no GitHub Pages, na conta `contatosafranchising-dotcom`.
+Qualquer alteração vai ao ar com:
 
-Depois de publicar, volte ao painel e preencha o campo do endereço público
-para os links saírem certos.
+```
+git add -A
+git commit -m "o que mudou"
+git push
+```
+
+Leva de 1 a 2 minutos para aparecer.
 
 ---
 
-## 9. O que já foi testado
+## 10. O que já foi testado
 
-Rodado em navegador de verdade, em tela de 390 px:
+Em navegador de verdade, de 320 px a 430 px de largura:
 
-- as 4 telas do layout aprovado, batendo com a arte
+- as 4 telas do layout batendo com a arte aprovada (diferença de 1 px de
+  altura no tabuleiro e na tela de tentativas esgotadas)
 - sorteio diferente a cada partida (4 partidas, 4 disposições e 4 conjuntos)
-- verso sorteado por rodada (10 partidas, os 4 desenhos apareceram, mesa sempre uniforme)
+- verso sorteado por rodada (10 partidas, os 4 desenhos apareceram)
 - travamento do tabuleiro durante a comparação (a 4ª carta é ignorada)
 - contador de erros consecutivos zerando ao acertar um par
 - bloqueio de 24h com regressivo correndo, sem escapatória pelo botão
@@ -281,18 +290,18 @@ Rodado em navegador de verdade, em tela de 390 px:
 - mensagem do WhatsApp com acento e emoji intactos
 - nome lembrado entre visitas
 - painel com as 42 unidades e os links
-- nenhum erro de console
+- nenhum erro de console, nenhum estouro horizontal
 
 ---
 
-## 10. Limitações conhecidas (não são bugs)
+## 11. Limitações conhecidas (não são bugs)
 
 O projeto roda 100% no navegador, então:
 
 - o cronômetro pode ser manipulado por quem abrir o DevTools;
 - o bloqueio de 24h é contornável limpando o `localStorage` ou usando aba
   anônima;
-- o print da tela do cupom pode ser reencaminhado.
+- o cupom é fixo por prêmio, então o print pode ser reencaminhado.
 
 Isso é aceitável **porque a validação final é humana**: a loja recebe a
 mensagem no WhatsApp e decide. O atendente confere o pedido mínimo antes de
@@ -304,13 +313,13 @@ só quando e se o problema aparecer.
 
 ---
 
-## 11. Ainda em aberto
+## 12. Ainda em aberto
 
-- [ ] Calibrar as faixas de tempo com dados reais (seção 4)
-- [ ] Confirmar o pedido mínimo do nível 4 (está em R$ 85)
+- [ ] Calibrar as faixas de tempo com dados reais (seção 5)
 - [ ] Conferir se os mínimos valem para toda a rede ou variam por praça —
       Sinop e Florianópolis não têm o mesmo ticket médio
 - [ ] Preencher `WHATS_FRANQUEADORA` no `config.js`
-- [ ] Decidir se vale capturar telefone além do nome (mais fricção antes de
-      jogar, mas alimenta a Central de Envios)
-- [ ] Testar em celular real antes de mandar para as 42 unidades
+- [ ] Ligar a planilha do Google (`CONFIG.ENDPOINT`) antes de mandar para as
+      42 unidades, senão as respostas ficam só no aparelho de cada um
+- [ ] Decidir se vale capturar telefone além do nome
+- [ ] Testar em celular real
