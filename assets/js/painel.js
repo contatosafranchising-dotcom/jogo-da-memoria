@@ -99,7 +99,8 @@
           bloqueios: m.bloqueios || 0,
           resgates: m.resgates || 0,
           resposta: m.resposta || "pendente",     // P1 — quer o jogo
-          resposta2: m.resposta2 || "pendente"     // P2 — agendamento de stories por R$ 20,00
+          resposta2: m.resposta2 || "pendente",    // P2 — agendamento de stories por R$ 20,00
+          respostaOrigem: m.respostaOrigem || ""    // "painel" = marcada pela franqueadora
         };
       });
 
@@ -152,45 +153,102 @@
     return lista;
   }
 
-  function celulaResposta(valor, textoSim, textoNao) {
+  /* A resposta pode chegar de dois jeitos:
+     - o franqueado abriu o link dele e respondeu no celular;
+     - ou ligou/mandou no grupo e a franqueadora marca aqui.
+     Os dois viram o mesmo evento "resposta"; o que muda é a origem, que
+     aparece embaixo do seletor para não confundir depois. */
+  function celulaResposta(loja, qual, textoSim, textoNao) {
     const td = document.createElement("td");
-    const marcador = document.createElement("span");
-    marcador.className = "marcador marcador--" + valor;
-    marcador.textContent = valor === "sim" ? textoSim
-                         : valor === "nao" ? textoNao
-                         : "Sem resposta";
-    td.appendChild(marcador);
+    const valor = qual === 1 ? loja.resposta : loja.resposta2;
+
+    const sel = document.createElement("select");
+    sel.className = "escolha escolha--" + valor;
+    sel.setAttribute("aria-label",
+      (qual === 1 ? "Quer o jogo" : "Aceita o agendamento") + " — " + loja.nome);
+
+    [["pendente", "— sem resposta"], ["sim", textoSim], ["nao", textoNao]]
+      .forEach(function (par) {
+        const op = document.createElement("option");
+        op.value = par[0];
+        op.textContent = par[1];
+        if (par[0] === valor) op.selected = true;
+        sel.appendChild(op);
+      });
+
+    const nota = document.createElement("span");
+    nota.className = "marca-painel";
+    nota.textContent = valor === "pendente" ? ""
+                     : (loja.respostaOrigem === "painel" ? "marcado por você" : "respondeu no link");
+
+    sel.addEventListener("change", function () {
+      if (qual === 1) loja.resposta = sel.value; else loja.resposta2 = sel.value;
+      loja.respostaOrigem = "painel";
+
+      // manda as DUAS respostas: o consolidado guarda a última linha inteira
+      API.evento("resposta", {
+        loja: loja.slug,
+        resposta: loja.resposta,
+        resposta2: loja.resposta2,
+        nome: "",
+        origem: "painel"
+      });
+
+      sel.className = "escolha escolha--" + sel.value;
+      nota.textContent = sel.value === "pendente" ? "" : "marcado por você";
+      atualizarResumo();
+      avisar(loja.nome + ": " + (qual === 1 ? "quer o jogo" : "agenda stories") +
+             " = " + (sel.value === "pendente" ? "sem resposta" : sel.value.toUpperCase()));
+    });
+
+    td.appendChild(sel);
+    td.appendChild(nota);
     return td;
   }
 
-  function celulaLink(l, paraFranqueado, rotulo) {
+  /* Os dois links da unidade na MESMA célula, um embaixo do outro.
+     Antes cada um tinha sua coluna com a URL inteira escrita, o que jogava a
+     tabela para o lado e obrigava a rolar até achar o botão de copiar. */
+  function celulaLinks(l) {
     const td = document.createElement("td");
     const caixa = document.createElement("div");
-    caixa.className = "celula-link";
+    caixa.className = "links-loja";
 
-    const endereco = linkDaLoja(l.slug, paraFranqueado);
+    [[false, "cliente", "Cliente"], [true, "franqueado", "Franqueado"]]
+      .forEach(function (par) {
+        const paraFranqueado = par[0];
+        const endereco = linkDaLoja(l.slug, paraFranqueado);
 
-    const texto = document.createElement("span");
-    texto.className = "link-loja";
-    texto.textContent = endereco;
+        const linha = document.createElement("div");
+        linha.className = "link-linha";
 
-    const botao = document.createElement("button");
-    botao.className = "mini";
-    botao.textContent = "Copiar";
-    botao.addEventListener("click", function () {
-      copiar(linkDaLoja(l.slug, paraFranqueado), rotulo + " de " + l.nome + " copiado!");
-    });
+        const etq = document.createElement("span");
+        etq.className = "etq etq--" + par[1];
+        etq.textContent = par[2];
 
-    const abrir = document.createElement("a");
-    abrir.className = "mini";
-    abrir.textContent = "Abrir";
-    abrir.target = "_blank";
-    abrir.rel = "noopener";
-    abrir.href = endereco;
+        const botao = document.createElement("button");
+        botao.className = "mini";
+        botao.textContent = "Copiar";
+        botao.title = endereco;
+        botao.addEventListener("click", function () {
+          copiar(linkDaLoja(l.slug, paraFranqueado),
+                 "Link do " + par[2].toLowerCase() + " de " + l.nome + " copiado!");
+        });
 
-    caixa.appendChild(texto);
-    caixa.appendChild(botao);
-    caixa.appendChild(abrir);
+        const abrir = document.createElement("a");
+        abrir.className = "mini";
+        abrir.textContent = "Abrir";
+        abrir.target = "_blank";
+        abrir.rel = "noopener";
+        abrir.href = endereco;
+        abrir.title = endereco;
+
+        linha.appendChild(etq);
+        linha.appendChild(botao);
+        linha.appendChild(abrir);
+        caixa.appendChild(linha);
+      });
+
     td.appendChild(caixa);
     return td;
   }
@@ -215,6 +273,13 @@
       tdNome.appendChild(cod);
       tr.appendChild(tdNome);
 
+      // os dois links da unidade
+      tr.appendChild(celulaLinks(l));
+
+      // as duas respostas do final, editáveis
+      tr.appendChild(celulaResposta(l, 1, "Sim, quer",    "Agora não"));
+      tr.appendChild(celulaResposta(l, 2, "Sim, agendar", "Não agendar"));
+
       // números
       ["acessos", "inicios", "conclusoes", "bloqueios", "resgates"].forEach(function (campo) {
         const td = document.createElement("td");
@@ -222,14 +287,6 @@
         td.textContent = l[campo];
         tr.appendChild(td);
       });
-
-      // as duas respostas do final
-      tr.appendChild(celulaResposta(l.resposta,  "Sim, quer",     "Agora não"));
-      tr.appendChild(celulaResposta(l.resposta2, "Sim, agendar", "Não agendar"));
-
-      // os dois links da unidade
-      tr.appendChild(celulaLink(l, false, "Link do cliente"));
-      tr.appendChild(celulaLink(l, true,  "Link do franqueado"));
 
       corpo.appendChild(tr);
     });

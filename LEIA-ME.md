@@ -318,6 +318,26 @@ si não é cobrado, o que entra no boleto é o sistema de agendamento de stories
 qualquer uma das duas respostas, ordenação e exportação em CSV com as duas
 colunas de resposta e os dois links.
 
+### Respondendo pela loja
+
+Na maioria das vezes o franqueado vai responder por telefone ou no grupo,
+não abrindo o link. As duas colunas de resposta são **seletores**: escolha
+Sim / Não ali mesmo e fica registrado igual, com a marca *"marcado por
+você"* embaixo — para não confundir depois com quem respondeu no celular.
+
+### Os dois links, sem rolar a tabela
+
+Cada unidade tem uma única coluna **Links da unidade**, com duas linhas:
+
+```
+[CLIENTE]     Copiar  Abrir
+[FRANQUEADO]  Copiar  Abrir
+```
+
+A URL inteira não é mais escrita na tabela (ela fica no `title` do botão).
+Unidade, links e as duas respostas cabem nos primeiros 810px — os números
+ficam à direita, onde rolar não atrapalha.
+
 ### Dois modos
 
 **Demonstração (como está agora).** `CONFIG.ENDPOINT` está vazio, então tudo

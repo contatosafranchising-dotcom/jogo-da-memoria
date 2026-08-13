@@ -126,7 +126,8 @@ const API = (function () {
           loja: slug, acessos: 0, inicios: 0, conclusoes: 0,
           bloqueios: 0, resgates: 0,
           resposta: "",    // P1 — a unidade quer o jogo
-          resposta2: "",   // P2 — a franqueadora publica os links por R$ 20,00
+          resposta2: "",   // P2 — o agendamento de stories por R$ 20,00
+          respostaOrigem: "",   // "painel" = marcada pela franqueadora
           respostaEm: 0, ultimoEm: 0
         };
       }
@@ -139,6 +140,7 @@ const API = (function () {
       if (ev.tipo === "resposta" && ev.em >= l.respostaEm) {
         l.resposta = ev.resposta || "";
         l.resposta2 = ev.resposta2 || "";
+        l.respostaOrigem = ev.origem || "";
         l.respostaEm = ev.em;
       }
       if (ev.em > l.ultimoEm) l.ultimoEm = ev.em;

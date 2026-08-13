@@ -194,7 +194,7 @@ img{ display:block; max-width:100%; }
   width:100%;
   border-collapse:collapse;
   font-size:13px;
-  min-width:1240px;   /* 2 respostas + 2 links por unidade */
+  min-width:1180px;
 }
 .tabela th{
   text-align:left;
@@ -237,6 +237,50 @@ td.num{ text-align:right; font-variant-numeric:tabular-nums; }
 .marcador--sim     { background:rgba(43,216,97,.16);  color:var(--verde);  border:1px solid rgba(43,216,97,.4); }
 .marcador--nao     { background:rgba(211,3,3,.14);    color:#FF8A8A;       border:1px solid rgba(211,3,3,.4); }
 .marcador--pendente{ background:rgba(255,255,255,.05);color:var(--cinza-fraco); border:1px solid var(--borda); }
+
+/* os dois links da unidade, um embaixo do outro e sem a URL comprida
+   empurrando a tabela para o lado */
+.links-loja{ display:flex; flex-direction:column; gap:6px; }
+.link-linha{ display:flex; align-items:center; gap:6px; }
+.etq{
+  display:inline-block;
+  min-width:88px;
+  padding:4px 9px;
+  border-radius:7px;
+  font-size:10.5px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  text-align:center;
+}
+.etq--cliente   { background:rgba(43,216,97,.12);  color:var(--verde);   border:1px solid rgba(43,216,97,.35); }
+.etq--franqueado{ background:rgba(212,175,55,.12); color:var(--dourado); border:1px solid rgba(212,175,55,.35); }
+
+/* resposta editável pela franqueadora */
+.escolha{
+  width:100%;
+  min-width:154px;
+  padding:7px 9px;
+  border-radius:8px;
+  border:1px solid var(--borda);
+  background:#101010;
+  color:var(--cinza);
+  font-family:inherit;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+.escolha:focus{ outline:2px solid rgba(212,175,55,.5); outline-offset:1px; }
+.escolha--sim{ border-color:rgba(43,216,97,.5);  color:var(--verde);  background:rgba(43,216,97,.08); }
+.escolha--nao{ border-color:rgba(211,3,3,.5);    color:#FF8A8A;       background:rgba(211,3,3,.08); }
+.marca-painel{
+  display:block;
+  margin-top:4px;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.04em;
+  color:var(--cinza-fraco);
+}
 
 .celula-link{ display:flex; align-items:center; gap:8px; }
 .link-loja{

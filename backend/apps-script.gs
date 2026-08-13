@@ -112,7 +112,7 @@ function registrar(p) {
     p.cupom || '',
     p.resposta || '',
     p.resposta2 || '',
-    'web'
+    p.origem || 'web'   // "painel" = a franqueadora marcou pela loja
   ]);
 
   return { ok: true };
@@ -139,12 +139,13 @@ function listar() {
     var slug = String(linha[2] || '(sem-loja)');
     var resposta  = String(linha[8] || '');
     var resposta2 = String(linha[9] || '');
+    var origem    = String(linha[10] || '');
 
     if (!porLoja[slug]) {
       porLoja[slug] = {
         loja: slug, acessos: 0, inicios: 0, conclusoes: 0,
         bloqueios: 0, resgates: 0,
-        resposta: '', resposta2: '', respostaEm: 0, ultimoEm: 0
+        resposta: '', resposta2: '', respostaOrigem: '', respostaEm: 0, ultimoEm: 0
       };
     }
 
@@ -161,6 +162,7 @@ function listar() {
     if (tipo === 'resposta' && resposta && ts >= l.respostaEm) {
       l.resposta = resposta;
       l.resposta2 = resposta2;
+      l.respostaOrigem = origem;
       l.respostaEm = ts;
     }
     if (ts > l.ultimoEm) l.ultimoEm = ts;
