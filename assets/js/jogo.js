@@ -42,19 +42,24 @@
     }
   };
 
-  /* Virada de temporada: zera o bloqueio de 24h de quem já jogou.
-     Roda antes de qualquer outra coisa, uma única vez por aparelho —
-     depois de zerar, grava a temporada nova e não mexe mais em nada. */
+  /* Virada de temporada: o aparelho fica COMO SE NUNCA TIVESSE JOGADO.
+     Some o bloqueio de 24h, o nome, o cupom que já ganhou, a contagem de
+     partidas e os eventos guardados. Roda uma única vez por aparelho, antes
+     de qualquer outra coisa; depois grava a temporada nova e não mexe mais.
+     A unidade é a única coisa que fica: ela diz onde a pessoa está, não o
+     que ela jogou. */
   function aplicarTemporada() {
     const st = Estado.ler();
     const atual = CONFIG.TEMPORADA || 1;
     if (st.temporada === atual) return;
 
-    Estado.gravar({
-      temporada: atual,
-      bloqueadoAte: null,   // a punição da temporada passada morre aqui
-      errosSeguidos: 0
-    });
+    Estado.limpar();
+    Estado.gravar({ temporada: atual, loja: st.loja || "" });
+
+    // zera também os acessos/partidas guardados neste aparelho
+    // API é declarado com const em api.js, então NÃO existe em window:
+    // testar window.API dá sempre falso e os eventos ficariam para trás.
+    if (typeof API !== "undefined" && API.limparLocal) API.limparLocal();
   }
 
   aplicarTemporada();

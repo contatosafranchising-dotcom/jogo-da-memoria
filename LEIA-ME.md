@@ -155,7 +155,7 @@ mas cada um vai para uma tela:
 Quem ganhou **não perde o cupom**: ele fica salvo e é remontado a cada visita
 até vencer os 30 dias.
 
-### Zerar quem está bloqueado
+### Começar tudo de novo (zerar os aparelhos)
 
 O bloqueio de 24h mora no aparelho de cada cliente — não dá para apagar de
 fora. Para liberar todo mundo de uma vez, troque o número e publique:

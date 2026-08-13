@@ -52,14 +52,17 @@ const CONFIG = {
   // false = ganhou, pode jogar de novo na hora.
   BLOQUEIO_APOS_GANHAR: true,
 
-  // ZERAR TODO MUNDO.
-  // O bloqueio de 24h mora no aparelho de cada cliente, então não dá para
-  // apagar de fora. O jeito é este: troque o número abaixo (2, 3, 4...) e
-  // publique. Na primeira vez que o aparelho abrir o link, o jogo vê que a
-  // temporada mudou, joga fora o bloqueio antigo e libera a pessoa para
-  // jogar de novo. Vale para os 42 links de uma vez.
-  // Só o bloqueio é apagado — o nome e a unidade continuam salvos.
-  TEMPORADA: 4,
+  // COMEÇAR TUDO DE NOVO.
+  // Os dados moram no aparelho de cada cliente, então não dá para apagar de
+  // fora. O jeito é este: troque o número abaixo (2, 3, 4...) e publique.
+  // Na primeira vez que o aparelho abrir o link, o jogo vê que a temporada
+  // mudou e apaga TUDO daquele aparelho: bloqueio de 24h, nome, cupom que
+  // já tinha ganhado, partidas e os acessos contados. Fica como se aquela
+  // pessoa nunca tivesse jogado. Vale para os 42 links de uma vez.
+  // Só a unidade continua salva — ela diz onde a pessoa está, não o que ela
+  // jogou.
+  // ATENÇÃO: quem ganhou um cupom e ainda não resgatou perde o cupom.
+  TEMPORADA: 5,
   VALIDADE_DIAS: 30,        // validade do cupom
 
   /* ---------- IDENTIDADE ---------- */
