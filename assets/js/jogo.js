@@ -482,7 +482,31 @@
 
   function ligarCronometro() {
     Jogo.inicioEm = Date.now();
+    Jogo.pausadoEm = 0;
+    correrCronometro();
+  }
+
+  // Pausa e retoma sem perder o tempo já corrido. Usado pelo pop-up dos 3
+  // erros na demonstração: o franqueado não pode perder segundos lendo.
+  function pausarCronometro() {
+    if (!Jogo.cronoTimer) return;
+    clearInterval(Jogo.cronoTimer);
+    Jogo.cronoTimer = null;
+    Jogo.pausadoEm = Date.now();
+    $("#crono").classList.remove("correndo");
+  }
+
+  function retomarCronometro() {
+    if (Jogo.pausadoEm) {
+      Jogo.inicioEm += Date.now() - Jogo.pausadoEm;   // desconta o tempo parado
+      Jogo.pausadoEm = 0;
+    }
+    correrCronometro();
+  }
+
+  function correrCronometro() {
     $("#crono").classList.add("correndo");
+    if (Jogo.cronoTimer) clearInterval(Jogo.cronoTimer);
 
     Jogo.cronoTimer = setInterval(function () {
       const seg = (Date.now() - Jogo.inicioEm) / 1000;
@@ -566,7 +590,10 @@
       b.el.setAttribute("aria-label", "Carta virada para baixo");
       Jogo.viradas = [];
 
-      if (estourou) {
+      if (estourou && MODO_FRANQUEADO) {
+        // demonstração: mostra o que o cliente veria e devolve a partida
+        avisarDemoDosTresErros();
+      } else if (estourou) {
         encerrarPartida();
         setTimeout(bloquear, 350);
       } else {
@@ -574,6 +601,36 @@
         $("#tabuleiro").classList.remove("travado");
       }
     }, CONFIG.TEMPO_VIRAR_MS);
+  }
+
+  /* Pop-up dos 3 erros no link do franqueado.
+     O cliente seria bloqueado por 24h neste ponto. O franqueado precisa ver
+     o jogo inteiro para decidir se quer, então mostra o aviso, para o
+     cronômetro enquanto ele lê, zera os erros e devolve o tabuleiro. */
+  function avisarDemoDosTresErros() {
+    Jogo.travado = true;
+    $("#tabuleiro").classList.add("travado");
+    pausarCronometro();
+
+    const caixa = $("#modal-demo");
+    caixa.classList.remove("oculto");
+    const botao = $("#btn-continuar-demo");
+    botao.focus();
+
+    function continuar() {
+      botao.removeEventListener("click", continuar);
+      caixa.classList.add("oculto");
+
+      Jogo.errosSeguidos = 0;
+      pintarErros();
+
+      if (!Jogo.emAndamento) return;
+      Jogo.travado = false;
+      $("#tabuleiro").classList.remove("travado");
+      retomarCronometro();
+    }
+
+    botao.addEventListener("click", continuar);
   }
 
   function pintarErros() {
@@ -635,8 +692,9 @@
       partidas: (st.partidas || 0) + 1
     };
 
-    // ganhou também espera 24h: um cupom por cliente por dia
-    if (CONFIG.BLOQUEIO_APOS_GANHAR) {
+    // ganhou também espera 24h: um cupom por cliente por dia.
+    // No link do franqueado nada trava — ele está demonstrando.
+    if (CONFIG.BLOQUEIO_APOS_GANHAR && !MODO_FRANQUEADO) {
       gravar.bloqueadoAte = agora + CONFIG.BLOQUEIO_HORAS * 3600 * 1000;
       gravar.bloqueioMotivo = "premio";
     }
@@ -723,9 +781,10 @@
     if (esperaTimer) { clearInterval(esperaTimer); esperaTimer = null; }
 
     const caixa = $("#premio-espera");
-    const alvo = $("#premio-regressivo");
 
     function passo() {
+      const alvo = $("#premio-regressivo");
+      if (!alvo) return;
       const falta = (Estado.ler().bloqueadoAte || 0) - Date.now();
       if (falta <= 0) {
         clearInterval(esperaTimer);
@@ -740,11 +799,21 @@
       alvo.textContent = formatarRegressivo(falta);
     }
 
+    if (MODO_FRANQUEADO) {
+      // demonstração: explica a regra em vez de aplicá-la
+      caixa.innerHTML = "Um cliente só poderia jogar de novo <strong>amanhã</strong>." +
+                        "<span class=\"espera__nota\">Aqui você pode repetir quantas vezes quiser.</span>";
+      caixa.classList.remove("oculto");
+      return;
+    }
+
     if (!estaBloqueado() || Estado.ler().bloqueioMotivo !== "premio") {
       caixa.classList.add("oculto");
       return;
     }
 
+    caixa.innerHTML = "Você já jogou hoje. Nova tentativa em " +
+                      "<strong id=\"premio-regressivo\" role=\"timer\">23:59:59</strong>";
     caixa.classList.remove("oculto");
     passo();
     esperaTimer = setInterval(passo, 1000);

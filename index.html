@@ -132,7 +132,7 @@
       <div class="medidor" id="medidor" aria-hidden="true">
         <span class="medidor__passo"></span><span class="medidor__passo"></span>
         <span class="medidor__passo"></span><span class="medidor__passo"></span>
-        <span class="medidor__passo"></span>
+        <span class="medidor__passo"></span><span class="medidor__passo"></span>
       </div>
       <p class="aviso" id="premio-nivel">Nível 5 de 5</p>
 
@@ -340,6 +340,39 @@
 
   <div class="rodape-foto"><img src="assets/img/deco/food-capa.jpg" alt="" aria-hidden="true" /></div>
 </main>
+
+
+<!-- =================================================================
+     POP-UP DOS 3 ERROS — SÓ NO LINK DO FRANQUEADO
+     O cliente seria bloqueado por 24h aqui. O franqueado vê o que
+     aconteceria e continua a partida: ele precisa ver o jogo inteiro
+     para decidir se quer.
+     ================================================================= -->
+<div class="modal oculto" id="modal-demo" role="dialog" aria-modal="true"
+     aria-labelledby="modal-demo-titulo">
+  <div class="modal__caixa">
+    <div class="modal__icone" aria-hidden="true">
+      <img src="assets/img/deco/ic-ampulheta.png" alt="" onerror="this.remove()" />
+      <span>⏳</span>
+    </div>
+
+    <h2 class="modal__titulo" id="modal-demo-titulo">
+      3 ERROS<br /><span class="vm">SEGUIDOS</span>
+    </h2>
+
+    <p class="modal__texto">
+      Se você fosse um cliente, o jogo <strong>travaria agora</strong> e só
+      liberaria <strong>daqui a 24 horas</strong>.
+    </p>
+
+    <p class="modal__nota">
+      Esta é a demonstração para o franqueado: pode continuar e terminar a
+      partida. O cronômetro ficou parado enquanto você lia isto.
+    </p>
+
+    <button class="botao" id="btn-continuar-demo">CONTINUAR JOGANDO</button>
+  </div>
+</div>
 
 
 <!-- aviso curto que sobe do rodapé; substitui o alert() -->

@@ -13,8 +13,10 @@ const CONFIG = {
   //   ...index.html?loja=camboriu                  -> jogo do CLIENTE, acaba no prêmio
   //   ...index.html?loja=camboriu&modo=franqueado  -> versão do FRANQUEADO, com as perguntas
   // Este valor é só o que vale quando o link vem SEM ?modo=.
-  // Os dois links de cada loja saem prontos no painel.html.
-  MODO_DEMO_FRANQUEADO: true,
+  // Fica em false porque é o lado seguro: link solto, sem parâmetro, é
+  // tratado como link de cliente. O painel gera os dois com o parâmetro
+  // certo, então ninguém depende deste padrão.
+  MODO_DEMO_FRANQUEADO: false,
 
   // Cole aqui a URL do Google Apps Script (ver /backend/apps-script.gs).
   // Vazio = o jogo funciona 100%, só que os dados ficam no navegador (modo demonstração).
@@ -86,6 +88,9 @@ const CONFIG = {
    PRÊMIOS
    Ordem: do melhor (mais rápido) para o mais simples.
    "ateSegundos" = completou em até X segundos, ganha este prêmio.
+   A lista está do mais rápido para o mais lento e é lida de cima para baixo:
+   o primeiro nível em que o tempo couber é o que vale. O último (999) é o
+   piso — quem termina em qualquer tempo leva pelo menos ele.
    "custo" = custo real aproximado por cupom queimado, para conta de padaria.
 
    ATENÇÃO — ler antes de publicar:
@@ -98,11 +103,12 @@ const CONFIG = {
    ============================================================= */
 
 const PREMIOS = [
-  { nivel: 5, ateSegundos:  15, nome: "1 Temaki Hot",    tipo: "produto",  minimo: 110, custo: 10.00, cupom: "TEMAKIJOGO", selo: "PRÊMIO MÁXIMO"  },
-  { nivel: 4, ateSegundos:  24, nome: "10 Hot Cortesia", tipo: "produto",  minimo:  95, custo: 10.00, cupom: "10HOTJOGO",  selo: "PRÊMIO RARO"    },
-  { nivel: 3, ateSegundos:  34, nome: "15% de desconto", tipo: "desconto", minimo:  80, custo: 12.00, cupom: "15OFFJOGO",  selo: "MUITO BOM"      },
-  { nivel: 2, ateSegundos:  48, nome: "10% de desconto", tipo: "desconto", minimo:  65, custo:  6.50, cupom: "10OFFJOGO",  selo: "BOA!"           },
-  { nivel: 1, ateSegundos: 999, nome: "5% de desconto",  tipo: "desconto", minimo:  50, custo:  2.50, cupom: "5OFFJOGO",   selo: "VOCÊ CONSEGUIU" }
+  { nivel: 6, ateSegundos:  10, nome: "1 Temaki Filadélfia", tipo: "produto",  minimo: 100, custo: 10.00, cupom: "FILAJOGO",   selo: "PRÊMIO MÁXIMO"  },
+  { nivel: 5, ateSegundos:  15, nome: "1 Temaki Hot",        tipo: "produto",  minimo:  90, custo: 10.00, cupom: "TEMAKIJOGO", selo: "PRÊMIO RARO"    },
+  { nivel: 4, ateSegundos:  20, nome: "15% de desconto",     tipo: "desconto", minimo:  80, custo: 12.00, cupom: "15OFFJOGO",  selo: "EXCELENTE"      },
+  { nivel: 3, ateSegundos:  24, nome: "10% de desconto",     tipo: "desconto", minimo:  70, custo:  7.00, cupom: "10OFFJOGO",  selo: "MUITO BOM"      },
+  { nivel: 2, ateSegundos:  30, nome: "10 Hot Cortesia",     tipo: "produto",  minimo:  60, custo: 10.00, cupom: "10HOTJOGO",  selo: "BOA!"           },
+  { nivel: 1, ateSegundos: 999, nome: "5% de desconto",      tipo: "desconto", minimo:  50, custo:  2.50, cupom: "5OFFJOGO",   selo: "VOCÊ CONSEGUIU" }
 ];
 
 

@@ -628,7 +628,7 @@ input{ font-family:inherit; }
   margin:16px 0 6px;
 }
 .medidor__passo{
-  width:34px; height:6px;
+  width:clamp(22px, 7.5vw, 34px); height:6px;   /* 6 traços cabem em 320px */
   border-radius:4px;
   background:#2C2C2C;
   transition:background .35s ease, box-shadow .35s ease;
@@ -749,12 +749,22 @@ input{ font-family:inherit; }
   letter-spacing:.02em;
 }
 .espera strong{
+  color:var(--branco);
+  font-weight:900;
+}
+.espera #premio-regressivo{
   display:block;
   margin-top:3px;
   font-size:20px;
-  font-weight:900;
-  color:var(--branco);
   font-variant-numeric:tabular-nums;
+}
+.espera__nota{
+  display:block;
+  margin-top:4px;
+  font-size:11.5px;
+  font-weight:600;
+  color:var(--cinza-fraco);
+  letter-spacing:.01em;
 }
 
 /* ---------- 14. TELA 5: TENTATIVAS ESGOTADAS ----------
@@ -997,6 +1007,71 @@ input{ font-family:inherit; }
   background:var(--preto);
 }
 .faixa-loja:empty{ display:none; }
+
+/* ---------- 16c. POP-UP (nada de alert()) ---------- */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:80;                     /* acima do flash de erro, que é 60 */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(0,0,0,.78);
+  -webkit-backdrop-filter:blur(3px);
+  backdrop-filter:blur(3px);
+  animation:aparecerModal .22s ease-out both;
+}
+.modal.oculto{ display:none !important; }
+
+.modal__caixa{
+  width:100%;
+  max-width:330px;
+  padding:26px 22px 22px;
+  border:1px solid rgba(211,3,3,.55);
+  border-radius:18px;
+  background:linear-gradient(180deg, #161616, #0C0C0C);
+  box-shadow:0 24px 60px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.03) inset;
+  text-align:center;
+  animation:subirModal .28s cubic-bezier(.2,1.1,.35,1) both;
+}
+.modal__icone{ font-size:44px; line-height:1; margin-bottom:6px; }
+.modal__icone img{ max-height:56px; display:block; margin:0 auto; }
+.modal__icone img + span{ display:none; }
+
+.modal__titulo{
+  font-size:30px;
+  font-weight:900;
+  line-height:.92;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.modal__texto{
+  font-size:14.5px;
+  line-height:1.5;
+  color:#DCDCDC;
+}
+.modal__texto strong{ color:var(--branco); font-weight:800; }
+.modal__nota{
+  margin-top:12px;
+  padding:10px 12px;
+  border:1px solid rgba(212,175,55,.35);
+  border-radius:11px;
+  background:rgba(212,175,55,.07);
+  color:var(--dourado);
+  font-size:12.5px;
+  font-weight:600;
+  line-height:1.45;
+}
+.modal .botao{ margin-top:18px; }
+
+@keyframes aparecerModal{ from{ opacity:0; } to{ opacity:1; } }
+@keyframes subirModal{
+  from{ opacity:0; transform:translateY(16px) scale(.96); }
+  to  { opacity:1; transform:none; }
+}
 
 /* ---------- 17. AUXILIARES ---------- */
 

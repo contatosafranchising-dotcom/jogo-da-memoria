@@ -128,13 +128,27 @@ Quem decide é o **link**, não o arquivo:
 
 | Link | O que acontece |
 |---|---|
-| `?loja=camboriu` | jogo do cliente: acaba na tela do prêmio |
-| `?loja=camboriu&modo=franqueado` | acaba nas duas perguntas ao franqueado |
+| `?loja=camboriu` | jogo do cliente: acaba na tela do prêmio, 3 erros bloqueiam 24h |
+| `?loja=camboriu&modo=franqueado` | demonstração: 3 erros só avisam, e no fim vêm as duas perguntas |
+
+### O que muda no link do franqueado
+
+Ele está avaliando o jogo, não jogando valendo. Então:
+
+- **3 erros seguidos abrem um pop-up** — "se você fosse um cliente, o jogo
+  travaria agora e só liberaria daqui a 24 horas" — o cronômetro **para**
+  enquanto ele lê, os erros zeram e a partida continua de onde estava.
+  Aparece de novo a cada 3 erros.
+- **Ganhar não bloqueia.** Ele repete quantas vezes quiser; a tela do prêmio
+  explica que um cliente só jogaria de novo amanhã.
+- Nada disso conta como bloqueio no painel: é demonstração, não partida real.
 
 Os dois saem prontos no `painel.html`. Dá para mandar o do franqueado para o
 dono da loja e o do cliente para o Instagram no mesmo dia, sem republicar
 nada. `MODO_DEMO_FRANQUEADO` no config só vale quando o link vem **sem**
-`?modo=`.
+`?modo=`, e está em `false` de propósito: link solto, sem parâmetro, é
+tratado como link de cliente. O painel gera os dois com o parâmetro certo,
+então ninguém depende desse padrão.
 
 ### Uma partida por dia, ganhando ou perdendo
 
@@ -173,11 +187,16 @@ valendo normalmente.
 
 | Nível | Prêmio | Pedido mínimo | Custo aprox. | Custo/mínimo | Até |
 |---|---|---|---|---|---|
-| 5 | 1 Temaki Hot | R$ 110 | R$ 10,00 (CMV) | 9,1% | 15s |
-| 4 | 10 Hot Cortesia | R$ 95 | R$ 10,00 (CMV) | 10,5% | 24s |
-| 3 | 15% de desconto | R$ 80 | R$ 12,00 | 15,0% | 34s |
-| 2 | 10% de desconto | R$ 65 | R$ 6,50 | 10,0% | 48s |
+| 6 | 1 Temaki Filadélfia | R$ 100 | R$ 10,00 (CMV) | 10,0% | 10s |
+| 5 | 1 Temaki Hot | R$ 90 | R$ 10,00 (CMV) | 11,1% | 15s |
+| 4 | 15% de desconto | R$ 80 | R$ 12,00 | 15,0% | 20s |
+| 3 | 10% de desconto | R$ 70 | R$ 7,00 | 10,0% | 24s |
+| 2 | 10 Hot Cortesia | R$ 60 | R$ 10,00 (CMV) | **16,7%** | 30s |
 | 1 | 5% de desconto | R$ 50 | R$ 2,50 | 5,0% | completou |
+
+O nível 2 é o mais caro da escada: R$ 10 de CMV num pedido de R$ 60. Quem
+completa em 30s é a maioria, então é esse número que decide a conta da
+campanha — não o prêmio máximo.
 
 A escada sobe nos dois eixos: prêmio melhor exige mínimo maior. E o nível 3
 é o mais caro da tabela em proporção (15% do pedido), enquanto os prêmios em
