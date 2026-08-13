@@ -161,7 +161,7 @@ O bloqueio de 24h mora no aparelho de cada cliente — não dá para apagar de
 fora. Para liberar todo mundo de uma vez, troque o número e publique:
 
 ```js
-TEMPORADA: 3,   // vire para 4, 5, 6...
+TEMPORADA: 4,   // vire para 5, 6, 7...
 ```
 
 Na primeira vez que o aparelho abrir qualquer um dos 42 links, o jogo vê que

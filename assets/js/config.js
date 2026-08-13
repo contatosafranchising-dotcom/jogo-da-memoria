@@ -59,7 +59,7 @@ const CONFIG = {
   // temporada mudou, joga fora o bloqueio antigo e libera a pessoa para
   // jogar de novo. Vale para os 42 links de uma vez.
   // Só o bloqueio é apagado — o nome e a unidade continuam salvos.
-  TEMPORADA: 3,
+  TEMPORADA: 4,
   VALIDADE_DIAS: 30,        // validade do cupom
 
   /* ---------- IDENTIDADE ---------- */
