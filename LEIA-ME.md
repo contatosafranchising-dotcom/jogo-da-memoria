@@ -5,7 +5,7 @@ possível e desbloqueia um cupom que resgata pelo WhatsApp da unidade.
 
 HTML + CSS + JavaScript puro. **Sem npm, sem build, sem terminal.**
 
-**No ar:** https://contatosafranchising-dotcom.github.io/jogo-da-memoria/
+**No ar:** https://jogo.sacasadosushi.com.br/
 
 ---
 
@@ -13,9 +13,9 @@ HTML + CSS + JavaScript puro. **Sem npm, sem build, sem terminal.**
 
 | O que | Como |
 |---|---|
-| O jogo de uma unidade | `.../jogo-da-memoria/?loja=camboriu` |
-| A tela de escolha de unidade | `.../jogo-da-memoria/` sem nada depois |
-| O painel da franqueadora | `.../jogo-da-memoria/painel.html` |
+| O jogo de uma unidade | `https://jogo.sacasadosushi.com.br/?loja=camboriu` |
+| A tela de escolha de unidade | `https://jogo.sacasadosushi.com.br/` sem nada depois |
+| O painel da franqueadora | `https://jogo.sacasadosushi.com.br/painel.html` |
 
 Localmente é a mesma coisa: dois cliques no `index.html`.
 
@@ -280,8 +280,8 @@ Me manda seu pedido que eu já lanço aqui. 🥢
 Cada loja tem **dois** links do mesmo jogo publicado:
 
 ```
-cliente     .../jogo-da-memoria/?loja=camboriu
-franqueado  .../jogo-da-memoria/?loja=camboriu&modo=franqueado
+cliente     https://jogo.sacasadosushi.com.br/?loja=camboriu
+franqueado  https://jogo.sacasadosushi.com.br/?loja=camboriu&modo=franqueado
 ```
 
 O do cliente acaba na tela do prêmio. O do franqueado segue para as duas
