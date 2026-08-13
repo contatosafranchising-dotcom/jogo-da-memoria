@@ -37,7 +37,16 @@
 
 *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 
-html{ scroll-behavior:smooth; }
+html{
+  scroll-behavior:smooth;
+
+  /* Android e iOS "engordam" o texto de blocos largos por conta própria
+     (font boosting). Como todo o tamanho aqui vem de cqw, esse aumento
+     desencaixa as letras da arte de fundo e a tela parece com zoom.
+     Este par de linhas desliga o comportamento nos dois. */
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
 
 body{
   min-height:100vh;
@@ -957,7 +966,12 @@ input{ font-family:inherit; }
   background:transparent;
   border:none;
   color:var(--branco);
-  font-size:2.93cqw;            /* 25px no layout */
+
+  /* 2,93cqw dá ~11px num celular, e o Safari do iPhone DÁ ZOOM na página
+     inteira quando o campo em foco tem menos de 16px — e o zoom continua
+     depois, nas outras telas. Por isso o piso de 16px: perde um pouco da
+     fidelidade ao desenho e ganha a tela inteira de volta. */
+  font-size:max(16px, 2.93cqw);   /* 25px no layout */
   font-weight:500;
   letter-spacing:.01em;
 }
@@ -1142,4 +1156,70 @@ input{ font-family:inherit; }
     transition-duration:.01ms !important;
   }
   .carta{ transition:transform .2s ease !important; }
+}
+
+
+/* ---------- 21. TELAS DE CONTEÚDO NO CELULAR ----------
+   Prêmio, franqueado e escolha de unidade não são pôsteres de proporção
+   fixa como as telas desenhadas: são documentos. Aqui elas encolhem para
+   caber no aparelho, com uma prioridade clara — o botão do WhatsApp tem que
+   aparecer sem rolar. É ele que vira pedido.
+
+   Os cortes são todos de respiro e decoração, nunca de informação: o cupom,
+   o pedido mínimo, a validade e a unidade continuam todos na tela.        */
+
+@media (max-height:1000px){
+
+  /* a faixa de foto do rodapé é decoração; encolhe primeiro */
+  .rodape-foto{ max-height:132px; overflow:hidden; }
+  .rodape-foto img{ object-fit:cover; height:132px; object-position:center 38%; }
+
+  .tela:not(.tela--arte){ padding-bottom:18px; }
+  .marca{ padding:14px 0 2px; }
+  .marca img{ width:min(52%,190px); }
+
+  .titulo--menor{ font-size:clamp(28px,9.2vw,40px); }
+  .chamada{ font-size:14.5px; margin-top:10px; }
+
+  .cartao{ padding:16px 14px; }
+  .mt-20{ margin-top:14px; }
+  .mt-16{ margin-top:11px; }
+  .mt-12{ margin-top:9px; }
+
+  .selo{ padding:5px 13px; font-size:10.5px; }
+  .premio-nome{ font-size:clamp(26px,8.6vw,38px); }
+  .medidor{ margin:11px 0 4px; }
+
+  .cupom{ margin:13px 0 4px; padding:13px 14px 12px; }
+  .cupom__codigo{ font-size:clamp(22px,7.4vw,30px); }
+  .cupom__linha{ padding:7px 0; font-size:12.5px; }
+
+  .botao{ min-height:52px; }
+  .botao--whats{ font-size:15.5px; }
+  .espera{ margin-top:10px; padding:9px 12px; font-size:12px; }
+  .espera #premio-regressivo{ font-size:18px; }
+  .aviso{ margin-top:10px; font-size:11.5px; }
+}
+
+/* abaixo disso a foto do rodapé sai: é decoração, e o botão do WhatsApp
+   vale mais do que ela. */
+@media (max-height:900px){
+  .rodape-foto{ display:none; }
+  .cupom__linha{ padding:5px 0; }
+  .premio-nome{ font-size:clamp(24px,7.8vw,34px); }
+}
+
+/* aparelho baixo de verdade (iPhone SE, Galaxy antigo): aperta mais */
+@media (max-height:700px){
+  .rodape-foto{ max-height:92px; }
+  .rodape-foto img{ height:92px; }
+  .marca{ padding:10px 0 2px; }
+  .marca img{ width:min(46%,168px); }
+  .titulo--menor{ font-size:clamp(25px,8vw,34px); }
+  .cartao{ padding:14px 13px; }
+  .cupom{ padding:11px 12px 10px; }
+  .cupom__linha{ padding:6px 0; }
+  .medidor{ display:none; }          /* decoracao: sai antes do botao do WhatsApp */
+  #premio-nivel{ margin-top:6px; }
+  .marca{ padding:8px 0 2px; }
 }

@@ -20,6 +20,7 @@
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
 
 body{
   background:var(--fundo);
@@ -349,4 +350,9 @@ td.num{ text-align:right; font-variant-numeric:tabular-nums; }
   .topo__nome{ display:none; }
   .area{ padding:14px; }
   .ficha__valor{ font-size:26px; }
+}
+
+/* celular: 16px evita o zoom automatico do Safari ao focar um campo */
+@media (max-width:820px){
+  .entrada, .escolha{ font-size:16px; }
 }

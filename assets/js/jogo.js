@@ -128,11 +128,22 @@
     const destino = document.getElementById(id);
     if (!destino || destino === telaAtual) return;
 
+    // Fecha o teclado e volta ao topo. Sem isso, no celular a tela nova
+    // aparece no meio — na altura em que a anterior estava rolada — e o
+    // teclado aberto continua empurrando a página para cima.
+    if (document.activeElement && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+
     if (telaAtual) {
       telaAtual.classList.remove("ativa");
     }
     destino.classList.add("ativa");
     telaAtual = destino;
+
+    // "instant" e não "smooth": aqui é troca de tela, não rolagem
+    try { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); }
+    catch (e) { window.scrollTo(0, 0); }
     window.scrollTo(0, 0);
 
     // o cronômetro regressivo só roda enquanto a tela de bloqueio está à vista
