@@ -103,9 +103,8 @@ const CONFIG = {
    ============================================================= */
 
 const PREMIOS = [
-  { nivel: 6, ateSegundos:  10, nome: "1 Temaki Filadélfia", tipo: "produto",  minimo: 100, custo: 10.00, cupom: "FILAJOGO",   selo: "PRÊMIO MÁXIMO"  },
-  { nivel: 5, ateSegundos:  15, nome: "1 Temaki Hot",        tipo: "produto",  minimo:  90, custo: 10.00, cupom: "TEMAKIJOGO", selo: "PRÊMIO RARO"    },
-  { nivel: 4, ateSegundos:  20, nome: "15% de desconto",     tipo: "desconto", minimo:  80, custo: 12.00, cupom: "15OFFJOGO",  selo: "EXCELENTE"      },
+  { nivel: 5, ateSegundos:  10, nome: "1 Temaki Filadélfia", tipo: "produto",  minimo: 100, custo: 10.00, cupom: "FILAJOGO",   selo: "PRÊMIO MÁXIMO"  },
+  { nivel: 4, ateSegundos:  15, nome: "1 Temaki Hot",        tipo: "produto",  minimo:  90, custo: 10.00, cupom: "TEMAKIJOGO", selo: "PRÊMIO RARO"    },
   { nivel: 3, ateSegundos:  24, nome: "10% de desconto",     tipo: "desconto", minimo:  70, custo:  7.00, cupom: "10OFFJOGO",  selo: "MUITO BOM"      },
   { nivel: 2, ateSegundos:  30, nome: "10 Hot Cortesia",     tipo: "produto",  minimo:  60, custo: 10.00, cupom: "10HOTJOGO",  selo: "BOA!"           },
   { nivel: 1, ateSegundos: 999, nome: "5% de desconto",      tipo: "desconto", minimo:  50, custo:  2.50, cupom: "5OFFJOGO",   selo: "VOCÊ CONSEGUIU" }

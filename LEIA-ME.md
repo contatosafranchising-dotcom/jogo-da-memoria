@@ -187,9 +187,8 @@ valendo normalmente.
 
 | Nível | Prêmio | Pedido mínimo | Custo aprox. | Custo/mínimo | Até |
 |---|---|---|---|---|---|
-| 6 | 1 Temaki Filadélfia | R$ 100 | R$ 10,00 (CMV) | 10,0% | 10s |
-| 5 | 1 Temaki Hot | R$ 90 | R$ 10,00 (CMV) | 11,1% | 15s |
-| 4 | 15% de desconto | R$ 80 | R$ 12,00 | 15,0% | 20s |
+| 5 | 1 Temaki Filadélfia | R$ 100 | R$ 10,00 (CMV) | 10,0% | 10s |
+| 4 | 1 Temaki Hot | R$ 90 | R$ 10,00 (CMV) | 11,1% | 15s |
 | 3 | 10% de desconto | R$ 70 | R$ 7,00 | 10,0% | 24s |
 | 2 | 10 Hot Cortesia | R$ 60 | R$ 10,00 (CMV) | **16,7%** | 30s |
 | 1 | 5% de desconto | R$ 50 | R$ 2,50 | 5,0% | completou |
