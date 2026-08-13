@@ -46,7 +46,7 @@ var ABA_EVENTOS = 'eventos';
 
 // resposta  = pergunta 1 (a unidade quer o jogo)
 // resposta2 = pergunta 2 (a franqueadora publica os links por R$ 20,00)
-var COLUNAS = ['quando', 'tipo', 'loja', 'nome', 'tempo', 'nivel',
+var COLUNAS = ['id', 'quando', 'tipo', 'loja', 'nome', 'tempo', 'nivel',
                'premio', 'cupom', 'resposta', 'resposta2', 'origem'];
 
 
@@ -101,7 +101,12 @@ function registrar(p) {
   var ms = Number(p.em);
   if (ms && ms > 1000000000000) quando = new Date(ms);
 
+  // O aparelho reenvia o que não teve resposta confirmada. Se a linha já
+  // está aqui, o reenvio é ignorado — senão um cupom contaria duas vezes.
+  if (p.id && jaTem(aba, p.id)) return { ok: true, repetido: true };
+
   aba.appendRow([
+    p.id || '',
     quando,
     p.tipo || '',
     p.loja || '',
@@ -116,6 +121,19 @@ function registrar(p) {
   ]);
 
   return { ok: true };
+}
+
+
+/* ---------- o id já veio antes? ---------- */
+
+function jaTem(aba, id) {
+  var ultima = aba.getLastRow();
+  if (ultima < 2) return false;
+  var ids = aba.getRange(2, 1, ultima - 1, 1).getValues();
+  for (var i = ids.length - 1; i >= 0; i--) {
+    if (String(ids[i][0]) === String(id)) return true;
+  }
+  return false;
 }
 
 
@@ -134,12 +152,12 @@ function listar() {
 
   for (var i = 0; i < valores.length; i++) {
     var linha = valores[i];
-    var quando = linha[0];
-    var tipo = String(linha[1] || '');
-    var slug = String(linha[2] || '(sem-loja)');
-    var resposta  = String(linha[8] || '');
-    var resposta2 = String(linha[9] || '');
-    var origem    = String(linha[10] || '');
+    var quando = linha[1];
+    var tipo = String(linha[2] || '');
+    var slug = String(linha[3] || '(sem-loja)');
+    var resposta  = String(linha[9]  || '');
+    var resposta2 = String(linha[10] || '');
+    var origem    = String(linha[11] || '');
 
     if (!porLoja[slug]) {
       porLoja[slug] = {

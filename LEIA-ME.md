@@ -336,6 +336,24 @@ si não é cobrado, o que entra no boleto é o sistema de agendamento de stories
 qualquer uma das duas respostas, ordenação e exportação em CSV com as duas
 colunas de resposta e os dois links.
 
+### Quantas pessoas enviaram o cupom
+
+A coluna **Cupons enviados** conta, por unidade, quem clicou no botão verde
+que abre o WhatsApp da loja com a mensagem pronta — e mostra embaixo a
+fração de quem concluiu o jogo (ex.: *8, 62% de 13*).
+
+O evento leva junto a loja, o cupom, o nível, o prêmio e o tempo, então dá
+para ver qual prêmio converte melhor.
+
+**O que não dá para medir daqui:** se a pessoa apertou enviar dentro do
+WhatsApp. O jogo entrega a conversa aberta com o texto pronto; do envio em
+diante quem sabe é a loja. Trate o número como *intenção de resgate*.
+
+O clique acontece no instante em que o cliente sai da página para o
+aplicativo, que é justamente quando a rede costuma falhar. Por isso cada
+evento fica marcado como pendente até a planilha confirmar, e sobe sozinho
+na próxima vez que a pessoa abrir o link. Nenhum cupom se perde por 4G ruim.
+
 ### Respondendo pela loja
 
 Na maioria das vezes o franqueado vai responder por telefone ou no grupo,

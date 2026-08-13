@@ -285,6 +285,15 @@
         const td = document.createElement("td");
         td.className = "num" + (l[campo] ? "" : " zero");
         td.textContent = l[campo];
+
+        // quantos dos que terminaram o jogo foram até o WhatsApp da loja
+        if (campo === "resgates" && l.conclusoes) {
+          const taxa = document.createElement("span");
+          taxa.className = "marca-painel";
+          taxa.textContent = Math.round((l.resgates / l.conclusoes) * 100) + "% de " + l.conclusoes;
+          td.appendChild(taxa);
+        }
+
         tr.appendChild(td);
       });
 
@@ -315,6 +324,7 @@
     $("#n-sim2").textContent = sim2;
     $("#n-total-lojas").textContent = dados.length;
     $("#n-taxa").textContent = inicios ? Math.round((conclusoes / inicios) * 100) + "%" : "0%";
+    $("#n-taxa-resgate").textContent = conclusoes ? Math.round((resgates / conclusoes) * 100) + "%" : "0%";
     // quem paga os R$ 20,00 é quem disse sim na PERGUNTA 2 (a publicação),
     // não quem disse sim ao jogo — o jogo em si não é cobrado
     $("#n-receita").textContent = "R$ " + (sim2 * CONFIG.VALOR_COMBO).toLocaleString("pt-BR");

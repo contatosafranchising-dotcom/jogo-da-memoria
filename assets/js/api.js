@@ -26,6 +26,17 @@ const API = (function () {
 
   function agora() { return Date.now(); }
 
+  // Identificador do evento. Serve para a planilha não contar duas vezes o
+  // mesmo cupom quando um reenvio dá certo depois de um envio que já tinha
+  // chegado — só o carimbo de tempo não basta, dois cliques no mesmo
+  // milissegundo existem.
+  let sequencia = 0;
+  function novoId() {
+    sequencia++;
+    return Date.now().toString(36) + "-" + sequencia + "-" +
+           Math.random().toString(36).slice(2, 7);
+  }
+
   function lerLocal() {
     try {
       return JSON.parse(localStorage.getItem(CHAVE_EVENTOS) || "[]");
@@ -98,19 +109,57 @@ const API = (function () {
      tipo: acesso | inicio | conclusao | bloqueio | resgate | resposta   */
 
   function evento(tipo, dados) {
-    const registro = Object.assign({ tipo: tipo, em: agora() }, dados || {});
+    const registro = Object.assign({ id: novoId(), tipo: tipo, em: agora() }, dados || {});
 
     // sempre grava no aparelho — é o que faz o painel funcionar sem backend
     const lista = lerLocal();
+    registro.enviado = false;
     lista.push(registro);
     gravarLocal(lista);
 
     // e dispara para a planilha, se houver endpoint. Não espera resposta.
-    if (CONFIG.ENDPOINT) {
-      jsonp(Object.assign({ acao: "registrar" }, registro), function () { /* silencioso */ });
-    }
+    enviar(registro);
 
     return registro;
+  }
+
+  /* Um envio só. Se der certo, marca o evento como enviado no aparelho.
+
+     Isso importa de verdade no clique do WhatsApp: ali o cliente sai da
+     página para o aplicativo, e num 4G ruim o pedido morre no meio. Sem a
+     marca, esse cupom sumia da conta para sempre. Com ela, o evento fica
+     pendente e sobe sozinho na próxima vez que a pessoa abrir o link. */
+  function enviar(registro) {
+    if (!CONFIG.ENDPOINT || registro.enviado) return;
+
+    const pacote = { acao: "registrar" };
+    Object.keys(registro).forEach(function (k) {
+      if (k !== "enviado") pacote[k] = registro[k];
+    });
+
+    jsonp(pacote, function (erro) {
+      if (erro) return;   // fica pendente para a próxima visita
+      const lista = lerLocal();
+      for (let i = lista.length - 1; i >= 0; i--) {
+        if (lista[i].id === registro.id) { lista[i].enviado = true; break; }
+      }
+      gravarLocal(lista);
+    });
+  }
+
+  /* Sobe o que ficou para trás. Roda na abertura de qualquer tela, no
+     máximo 20 por vez para não atropelar a rede do cliente. */
+  function sincronizar() {
+    if (!CONFIG.ENDPOINT) return 0;
+    const pendentes = lerLocal().filter(function (e) { return e.enviado === false; });
+    pendentes.slice(0, 20).forEach(function (e, i) {
+      setTimeout(function () { enviar(e); }, i * 250);
+    });
+    return pendentes.length;
+  }
+
+  function pendentes() {
+    return lerLocal().filter(function (e) { return e.enviado === false; }).length;
   }
 
   /* ---------- leitura consolidada (usada pelo painel) ---------- */
@@ -174,6 +223,8 @@ const API = (function () {
   return {
     evento: evento,
     listar: listar,
+    sincronizar: sincronizar,
+    pendentes: pendentes,
     eventosLocais: lerLocal,
     limparLocal: limparLocal
   };

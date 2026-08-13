@@ -1057,11 +1057,18 @@
       copiar(codigo, "Cupom copiado!");
     });
 
+    // "resgate" = o cliente clicou para abrir o WhatsApp da loja com a
+    // mensagem pronta. É o que dá para medir daqui: se ele apertou enviar
+    // dentro do aplicativo, só a loja sabe.
     $("#btn-whats").addEventListener("click", function () {
+      const st = Estado.ler();
       API.evento("resgate", {
         loja: loja ? loja.slug : "",
-        nome: Estado.ler().nome || "",
-        cupom: $("#cupom-codigo").textContent
+        nome: st.nome || "",
+        cupom: $("#cupom-codigo").textContent,
+        nivel: st.ultimoNivel || "",
+        premio: st.ultimoPremio || "",
+        tempo: st.ultimoTempo ? Math.round(st.ultimoTempo) : ""
       });
     });
 
@@ -1111,6 +1118,10 @@
   function comecar() {
     ligarBotoes();
     espalharCartasDeFundo();
+
+    // sobe o que ficou pendente de visitas anteriores (cupom enviado com a
+    // rede ruim, por exemplo) antes de qualquer coisa nova acontecer
+    if (typeof API !== "undefined" && API.sincronizar) API.sincronizar();
 
     const st = Estado.ler();
 
